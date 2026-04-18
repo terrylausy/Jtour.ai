@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jtour Logistics — AI 数字员工平台</title>
+<meta name="description" content="Jtour Logistics AI Platform — 智能报价精灵 & 报关助手，powered by Jtour.AI">
+<link rel="canonical" href="https://jtour.ai">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #1a73e8;
+  --primary-dark: #1557b0;
+  --customs: #7c3aed;
+  --customs-light: #ede9fe;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column;
+}
+header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a73e8 100%);
+  color: white; padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 18px; }
+.logo svg { width: 40px; height: 40px; }
+.logo-sub { font-size: 11px; color: #93c5fd; font-weight: 400; }
+.logo-divider { border-left: 1px solid rgba(255,255,255,0.2); padding-left: 12px; }
+.logo-powered { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+.logo-domain { font-size: 12px; color: #60a5fa; font-weight: 600; letter-spacing: 1px; }
+
+.agent-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 4px; }
+.agent-tab {
+  padding: 6px 18px; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.7); transition: all 0.2s; border: none; background: none;
+}
+.agent-tab:hover { color: white; background: rgba(255,255,255,0.1); }
+.agent-tab.active { background: white; color: var(--primary); font-weight: 600; }
+.agent-tab.active.customs-mode { color: var(--customs); }
+
+main {
+  display: flex; flex: 1; max-width: 1400px; margin: 0 auto;
+  width: 100%; gap: 24px; padding: 24px;
+}
+.left-panel { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.card {
+  background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); padding: 20px; box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.scenario-tab {
+  padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+  cursor: pointer; font-size: 13px; transition: all 0.15s;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  width: 100%; text-align: left; background: none; color: var(--text);
+}
+.scenario-tab:hover { border-color: var(--primary); background: #eff6ff; }
+.scenario-tab.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); font-weight: 600; }
+.scenario-tab .tag { font-size: 10px; background: #e0e7ff; color: #4338ca; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
+
+.example-btn {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 12px; text-align: left; font-size: 12px; color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; margin-bottom: 5px; width: 100%; line-height: 1.5;
+}
+.example-btn:hover { background: var(--bg); color: var(--text); border-color: var(--primary); }
+
+.country-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  font-size: 13px; transition: background 0.15s;
+  border: none; background: none; width: 100%; text-align: left;
+}
+.country-item:hover { background: var(--customs-light); color: var(--customs); }
+.flag { font-size: 18px; }
+
+.chat-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.chat-card {
+  flex: 1; background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden; min-height: calc(100vh - 140px);
+}
+.chat-header {
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; background: #fafbfc;
+}
+.agent-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.agent-badge.quote { background: #dbeafe; color: #1d4ed8; }
+.agent-badge.customs { background: var(--customs-light); color: var(--customs); }
+
+.chat-messages {
+  flex: 1; padding: 24px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.msg { display: flex; gap: 10px; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+  width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.msg.user .msg-avatar { background: #dbeafe; }
+.msg.bot .msg-avatar { background: linear-gradient(135deg, #60a5fa, #1a73e8); }
+.msg.bot.customs-agent .msg-avatar { background: linear-gradient(135deg, #c4b5fd, #7c3aed); }
+.msg-bubble {
+  max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.65;
+}
+.msg.user .msg-bubble { background: var(--primary); color: white; border-radius: 12px 4px 12px 12px; }
+.msg.bot .msg-bubble { background: #f1f5f9; color: var(--text); border-radius: 4px 12px 12px 12px; }
+.msg.bot.customs-agent .msg-bubble { background: #faf5ff; }
+
+.msg-bubble h2 { font-size: 15px; margin-bottom: 8px; margin-top: 4px; }
+.msg-bubble h3 { font-size: 13px; margin: 10px 0 6px; color: #334155; }
+.msg-bubble ul, .msg-bubble ol { padding-left: 18px; }
+.msg-bubble li { margin-bottom: 3px; }
+.msg-bubble strong { color: #0f172a; }
+.msg-bubble hr { border: none; border-top: 1px solid #e2e8f0; margin: 8px 0; }
+.msg-bubble em { color: var(--text-muted); font-size: 12px; }
+.msg-bubble code { background: #e2e8f0; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+.msg-bubble table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 8px 0; }
+.msg-bubble th { background: #f1f5f9; padding: 6px 8px; border: 1px solid #e2e8f0; text-align: left; }
+.msg-bubble td { padding: 5px 8px; border: 1px solid #e2e8f0; }
+
+.chat-input-area { padding: 16px 24px; border-top: 1px solid var(--border); background: #fafbfc; }
+.input-row { display: flex; gap: 10px; align-items: flex-end; }
+textarea {
+  flex: 1; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; font-size: 14px; resize: none; font-family: inherit;
+  outline: none; transition: border-color 0.2s; min-height: 52px; max-height: 120px; line-height: 1.5;
+}
+textarea:focus { border-color: var(--primary); }
+textarea.customs-input:focus { border-color: var(--customs); }
+.send-btn {
+  padding: 10px 22px; background: var(--primary); color: white;
+  border: none; border-radius: 10px; cursor: pointer; font-size: 14px;
+  font-weight: 600; transition: background 0.2s; height: 52px; white-space: nowrap;
+}
+.send-btn:hover { background: var(--primary-dark); }
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.send-btn.customs-mode { background: var(--customs); }
+.send-btn.customs-mode:hover { background: #6d28d9; }
+.hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+.right-panel { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-val { font-weight: 600; color: var(--primary); }
+.stat-val.customs { color: var(--customs); }
+
+.welcome-box { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+.welcome-icon { font-size: 48px; margin-bottom: 16px; }
+.welcome-box h3 { font-size: 16px; color: var(--text); margin-bottom: 8px; }
+.welcome-box p { font-size: 13px; line-height: 1.6; }
+
+.typing { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+.typing span { width: 7px; height: 7px; background: var(--text-muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity:0.4; } 40% { transform: scale(1); opacity:1; } }
+
+.panel-section { display: none; }
+.panel-section.active { display: block; }
+
+/* API Key 配置浮层 */
+.api-modal {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 1000; align-items: center; justify-content: center;
+}
+.api-modal.show { display: flex; }
+.api-modal-box {
+  background: white; border-radius: 16px; padding: 32px; width: 480px;
+  max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.api-modal-box h3 { font-size: 18px; margin-bottom: 8px; }
+.api-modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+.api-modal-box input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 10px 14px; font-size: 14px; outline: none; margin-bottom: 8px;
+}
+.api-modal-box input:focus { border-color: var(--primary); }
+.api-modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-primary {
+  flex: 1; padding: 10px; background: var(--primary); color: white;
+  border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;
+}
+.btn-secondary {
+  padding: 10px 20px; background: none; border: 1.5px solid var(--border);
+  border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--text-muted);
+}
+.api-key-status {
+  font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor: pointer;
+  border: none; font-weight: 600;
+}
+.api-key-status.set { background: #d1fae5; color: #065f46; }
+.api-key-status.unset { background: #fee2e2; color: #991b1b; }
+
+footer {
+  text-align: center; padding: 16px; font-size: 12px; color: var(--text-muted);
+  border-top: 1px solid var(--border); background: white;
+}
+footer a { color: var(--primary); text-decoration: none; }
+
+@media (max-width: 900px) {
+  main { flex-direction: column; padding: 12px; }
+  .left-panel, .right-panel { width: 100%; }
+  header { padding: 0 16px; }
+  .agent-tabs { gap: 2px; }
+  .agent-tab { padding: 5px 12px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- API Key 配置浮层 -->
+<div class="api-modal" id="api-modal">
+  <div class="api-modal-box">
+    <h3>🔑 配置 AI 接口密钥</h3>
+    <p>Jtour.AI 需要一个 AI 接口密钥来驱动报价精灵和报关助手。<br>
+    密钥只保存在您的浏览器本地，不会上传到任何服务器。</p>
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">选择 AI 服务</label>
+    <select id="api-provider" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;margin-bottom:12px;">
+      <option value="openai">OpenAI (GPT-4o)</option>
+      <option value="deepseek">DeepSeek (推荐 · 国内快)</option>
+    </select>
+    <label style="font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">API Key</label>
+    <input type="password" id="api-key-input" placeholder="sk-..." />
+    <div style="font-size:11px;color:var(--text-muted);">
+      🔒 密钥保存在 localStorage，不离开您的设备<br>
+      · DeepSeek: <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a>（国内可用，性价比高）<br>
+      · OpenAI: <a href="https://platform.openai.com" target="_blank">platform.openai.com</a>
+    </div>
+    <div class="api-modal-actions">
+      <button class="btn-primary" onclick="saveApiKey()">保存并开始使用</button>
+      <button class="btn-secondary" onclick="closeApiModal()">稍后配置</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <!-- SVG Logo inline -->
+    <svg viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="8" width="24" height="14" rx="3" fill="#60a5fa" opacity="0.9"/>
+      <rect x="6" y="16" width="32" height="16" rx="3" fill="#3b82f6"/>
+      <path d="M4 32 Q20 26 38 32" stroke="#60a5fa" stroke-width="2" fill="none"/>
+      <circle cx="10" cy="35" r="3" fill="#1a73e8"/>
+      <circle cx="28" cy="35" r="3" fill="#1a73e8"/>
+      <text x="46" y="27" font-family="Arial,sans-serif" font-weight="700" font-size="15" fill="white" letter-spacing="1">JTOUR</text>
+      <text x="46" y="37" font-family="Arial,sans-serif" font-weight="400" font-size="8" fill="#93c5fd" letter-spacing="2">LOGISTICS</text>
+    </svg>
+    <div class="logo-divider">
+      <div class="logo-powered">POWERED BY</div>
+      <div class="logo-domain">Jtour.AI</div>
+    </div>
+  </div>
+
+  <div class="agent-tabs">
+    <button class="agent-tab active" id="tab-quote" onclick="switchAgent('quote')">📦 报价精灵</button>
+    <button class="agent-tab" id="tab-customs" onclick="switchAgent('customs')">🛃 报关助手</button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="api-key-status unset" id="api-status-btn" onclick="openApiModal()">⚙️ 配置 API Key</button>
+  </div>
+</header>
+
+<main>
+  <!-- ── Left Panel ── -->
+  <div class="left-panel">
+    <div class="card panel-section active" id="left-quote">
+      <div class="card-title">📋 报价场景</div>
+      <button class="scenario-tab active" id="scene-fcl" onclick="setScene('FCL_DDP')">
+        <span>🚢</span> FCL 整柜 DDP<span class="tag">整柜</span>
+      </button>
+      <button class="scenario-tab" id="scene-fba" onclick="setScene('FBA')">
+        <span>📦</span> FBA 亚马逊头程<span class="tag">海派</span>
+      </button>
+      <button class="scenario-tab" id="scene-fbx" onclick="setScene('FBX')">
+        <span>✈️</span> FBX 空运快件<span class="tag">空运</span>
+      </button>
+    </div>
+
+    <div class="card panel-section active" id="left-quote-examples">
+      <div class="card-title">💡 示例查询</div>
+      <button class="example-btn" onclick="useExample(this)">从上海发20GP整柜家具到美国洛杉矶，货值$15000，DDP含税</button>
+      <button class="example-btn" onclick="useExample(this)">深圳发FBA到德国亚马逊仓，50件电子产品，每件1.5kg，10CBM</button>
+      <button class="example-btn" onclick="useExample(this)">宁波空运200kg玩具到英国，含锂电池，急件</button>
+      <button class="example-btn" onclick="useExample(this)">上海整柜20GP服装到日本，货值$20000</button>
+    </div>
+
+    <div class="card panel-section" id="left-customs">
+      <div class="card-title">🌍 目的国选择</div>
+      <button class="country-item" onclick="useCountry('美国')"><span class="flag">🇺🇸</span> 美国（US）</button>
+      <button class="country-item" onclick="useCountry('德国')"><span class="flag">🇩🇪</span> 德国（DE）</button>
+      <button class="country-item" onclick="useCountry('英国')"><span class="flag">🇬🇧</span> 英国（GB）</button>
+      <button class="country-item" onclick="useCountry('日本')"><span class="flag">🇯🇵</span> 日本（JP）</button>
+      <button class="country-item" onclick="useCountry('澳大利亚')"><span class="flag">🇦🇺</span> 澳大利亚（AU）</button>
+      <button class="country-item" onclick="useCountry('加拿大')"><span class="flag">🇨🇦</span> 加拿大（CA）</button>
+      <button class="country-item" onclick="useCountry('法国')"><span class="flag">🇫🇷</span> 法国（FR）</button>
+    </div>
+
+    <div class="card panel-section" id="left-customs-examples">
+      <div class="card-title">💡 报关示例</div>
+      <button class="example-btn" onclick="useExample(this)">出口到美国的玩具，含锂电池，需要什么报关文件</button>
+      <button class="example-btn" onclick="useExample(this)">发货到德国亚马逊FBA仓，电子产品CE认证和VAT要求</button>
+      <button class="example-btn" onclick="useExample(this)">出口英国服装，脱欧后关税是多少，单证要求</button>
+      <button class="example-btn" onclick="useExample(this)">日本进口化妆品PSE认证和禁限规定</button>
+    </div>
+  </div>
+
+  <!-- ── Chat Panel ── -->
+  <div class="chat-panel">
+    <div class="chat-card">
+      <div class="chat-header">
+        <span class="agent-badge quote" id="agent-badge">📦 报价精灵</span>
+        <span style="font-size:13px;color:var(--text-muted);" id="agent-subtitle">FCL DDP / FBA / FBX 智能报价</span>
+        <button onclick="clearChat()" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--text-muted);">清空</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="welcome-box">
+          <div class="welcome-icon" id="welcome-icon">📦</div>
+          <h3 id="welcome-title">报价精灵已就绪</h3>
+          <p id="welcome-desc">告诉我您的货物信息，我来给您生成详细报价。<br>支持 FCL DDP 整柜、FBA 亚马逊头程、FBX 空运三大场景。<br><br><em>首次使用请点击右上角"配置 API Key"</em></p>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="input-row">
+          <textarea id="input-box" rows="2" placeholder="描述您的货物需求，例如：从上海发30CBM玩具到美国，DDP含税..." onkeydown="handleKey(event)"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()">发送</button>
+        </div>
+        <div class="hint" id="input-hint">💡 Enter 发送 | Shift+Enter 换行 | 可自然语言描述货物信息</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Right Panel ── -->
+  <div class="right-panel">
+    <div class="card panel-section active" id="right-quote">
+      <div class="card-title">📊 最新报价</div>
+      <div id="quote-summary" style="color:var(--text-muted);font-size:13px;text-align:center;padding:12px 0;">暂无报价</div>
+    </div>
+
+    <div class="card panel-section" id="right-customs">
+      <div class="card-title">🔍 HS 编码速查</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">常见商品关税参考</div>
+      <div style="font-size:12px;">
+        <div class="stat-row"><span>智能手机 8517.12</span><span class="stat-val customs">0%</span></div>
+        <div class="stat-row"><span>玩具 9503.00</span><span class="stat-val customs">EU 4.7%</span></div>
+        <div class="stat-row"><span>T恤 6109.10</span><span class="stat-val customs">US 16.5%</span></div>
+        <div class="stat-row"><span>运动鞋 6404.11</span><span class="stat-val customs">US 20%</span></div>
+        <div class="stat-row"><span>充电宝 8507.60</span><span class="stat-val customs">EU 0%</span></div>
+        <div class="stat-row"><span>木椅 9401.61</span><span class="stat-val customs">US+25%</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ 参考汇率</div>
+      <div class="stat-row"><span>USD/CNY</span><span class="stat-val">7.25</span></div>
+      <div class="stat-row"><span>EUR/CNY</span><span class="stat-val">7.85</span></div>
+      <div class="stat-row"><span>GBP/CNY</span><span class="stat-val">9.15</span></div>
+      <div class="stat-row"><span>JPY/CNY</span><span class="stat-val">0.048</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏢 关于我们</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text-muted);">
+        <div>🌐 <a href="https://jtour.ai" target="_blank" style="color:var(--primary);">jtour.ai</a></div>
+        <div>📧 <a href="mailto:info@jtour.ai" style="color:var(--primary);">info@jtour.ai</a></div>
+        <div style="margin-top:8px;font-size:12px;">专注中美物流 · AI 赋能货代</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © 2026 <a href="https://jtour.ai">Jtour Logistics</a> · AI 数字员工平台 · Powered by Jtour.AI
+</footer>
+
+<script>
+// ── 状态 ────────────────────────────────────────────────────
+let currentAgent = 'quote';
+let currentScene = 'FCL_DDP';
+
+// ── API Key 管理 ─────────────────────────────────────────────
+function getApiKey() { return localStorage.getItem('jtour_api_key') || ''; }
+function getApiProvider() { return localStorage.getItem('jtour_api_provider') || 'deepseek'; }
+
+function openApiModal() {
+  document.getElementById('api-modal').classList.add('show');
+  const key = getApiKey();
+  if (key) document.getElementById('api-key-input').value = key;
+  document.getElementById('api-provider').value = getApiProvider();
+}
+function closeApiModal() { document.getElementById('api-modal').classList.remove('show'); }
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  const provider = document.getElementById('api-provider').value;
+  if (!key) { alert('请输入 API Key'); return; }
+  localStorage.setItem('jtour_api_key', key);
+  localStorage.setItem('jtour_api_provider', provider);
+  updateApiStatus();
+  closeApiModal();
+}
+
+function updateApiStatus() {
+  const btn = document.getElementById('api-status-btn');
+  const key = getApiKey();
+  if (key) {
+    btn.className = 'api-key-status set';
+    btn.textContent = '✅ API Key 已配置';
+  } else {
+    btn.className = 'api-key-status unset';
+    btn.textContent = '⚙️ 配置 API Key';
+  }
+}
+
+// 页面加载时检查
+window.addEventListener('load', () => {
+  updateApiStatus();
+  if (!getApiKey()) setTimeout(openApiModal, 800);
+});
+
+// ── Agent 切换 ───────────────────────────────────────────────
+function switchAgent(agent) {
+  currentAgent = agent;
+  const isCustoms = agent === 'customs';
+  document.getElementById('tab-quote').classList.toggle('active', !isCustoms);
+  document.getElementById('tab-customs').classList.toggle('active', isCustoms);
+  document.getElementById('left-quote').classList.toggle('active', !isCustoms);
+  document.getElementById('left-quote-examples').classList.toggle('active', !isCustoms);
+  document.getElementById('left-customs').classList.toggle('active', isCustoms);
+  document.getElementById('left-customs-examples').classList.toggle('active', isCustoms);
+  document.getElementById('right-quote').classList.toggle('active', !isCustoms);
+  document.getElementById('right-customs').classList.toggle('active', isCustoms);
+
+  const badge = document.getElementById('agent-badge');
+  badge.textContent = isCustoms ? '🛃 报关助手' : '📦 报价精灵';
+  badge.className = 'agent-badge ' + (isCustoms ? 'customs' : 'quote');
+  document.getElementById('agent-subtitle').textContent = isCustoms
+    ? '各国进口法规 / 关税税率 / 文件清单'
+    : 'FCL DDP / FBA / FBX 智能报价';
+
+  const textarea = document.getElementById('input-box');
+  const sendBtn = document.getElementById('send-btn');
+  const hint = document.getElementById('input-hint');
+  textarea.className = isCustoms ? 'customs-input' : '';
+  textarea.placeholder = isCustoms
+    ? '请输入报关查询，例如：出口到美国的玩具含锂电池，需要哪些报关文件？'
+    : '描述您的货物需求，例如：从上海发30CBM玩具到美国，DDP含税...';
+  sendBtn.className = 'send-btn' + (isCustoms ? ' customs-mode' : '');
+  hint.textContent = isCustoms
+    ? '💡 可询问：各国关税税率、必备单证、禁运品、合规要求等'
+    : '💡 Enter 发送 | Shift+Enter 换行 | 可自然语言描述货物信息';
+
+  clearChat();
+}
+
+function setScene(scene) {
+  currentScene = scene;
+  document.querySelectorAll('[id^="scene-"]').forEach(b => b.classList.remove('active'));
+  const map = { FCL_DDP: 'scene-fcl', FBA: 'scene-fba', FBX: 'scene-fbx' };
+  document.getElementById(map[scene])?.classList.add('active');
+}
+
+function useExample(btn) {
+  document.getElementById('input-box').value = btn.textContent.trim();
+  document.getElementById('input-box').focus();
+}
+
+function useCountry(country) {
+  const ta = document.getElementById('input-box');
+  ta.value = ta.value
+    ? ta.value + `（目的国：${country}）`
+    : `出口到${country}的货物，进口法规和关税要求是什么？`;
+  ta.focus();
+}
+
+// ── 发送消息 ─────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById('input-box');
+  const text = input.value.trim();
+  if (!text) return;
+
+  if (!getApiKey()) {
+    openApiModal();
+    return;
+  }
+
+  const btn = document.getElementById('send-btn');
+  input.value = '';
+  btn.disabled = true;
+  appendMsg('user', text);
+  const loadingEl = appendLoading();
+
+  try {
+    const systemPrompt = currentAgent === 'customs'
+      ? buildCustomsSystemPrompt()
+      : buildQuoteSystemPrompt();
+    const reply = await callAI(systemPrompt, text);
+    replaceLoading(loadingEl, reply, false);
+    if (currentAgent === 'quote') tryExtractQuote(reply);
+  } catch (e) {
+    replaceLoading(loadingEl, `❌ 请求失败：${e.message}\n\n请检查 API Key 是否正确`, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── AI 调用 ──────────────────────────────────────────────────
+async function callAI(systemPrompt, userMessage) {
+  const key = getApiKey();
+  const provider = getApiProvider();
+
+  let url, body, headers;
+
+  if (provider === 'deepseek') {
+    url = 'https://api.deepseek.com/chat/completions';
+    headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
+    body = JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 1500
+    });
+  } else {
+    url = 'https://api.openai.com/v1/chat/completions';
+    headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` };
+    body = JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 1500
+    });
+  }
+
+  const resp = await fetch(url, { method: 'POST', headers, body });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `HTTP ${resp.status}`);
+  }
+  const data = await resp.json();
+  return data.choices?.[0]?.message?.content || '未获取到回复';
+}
+
+// ── System Prompts ────────────────────────────────────────────
+function buildQuoteSystemPrompt() {
+  return `你是 Jtour Logistics（捷途物流）的 AI 报价精灵，专业处理中国出口物流报价。
+
+当前报价场景：${currentScene}
+- FCL_DDP：整柜 DDP 到门，含海运费+目的港清关+最后一公里
+- FBA：亚马逊头程（海派/空派），送到亚马逊仓库
+- FBX：国际空运快件
+
+## 报价规则（参考运价，可根据市场浮动调整±15%）
+
+### 海运费（基础运价，上海/宁波/深圳出发）
+- 美线：20GP $800-1200，40GP $1400-2000，40HQ $1600-2200
+- 欧线：20GP $600-900，40GP $1000-1600
+- 日本：20GP $400-600，40GP $700-1000
+
+### FBA 海派附加费（每票）
+- 亚马逊操作费：$150-200
+- FBA 标签：$30
+- 目的仓派送：$0.5-1.2/kg（欧洲），$0.8-1.5/kg（美国）
+
+### 空运价格（全程，含清关）
+- 美国：¥28-45/kg（含燃油附加费）
+- 欧洲：¥25-40/kg
+- 日本：¥18-28/kg
+- 最低计费：一般 45-100kg 起步
+
+### DDP 附加费
+- 目的港操作费：$150-300
+- 关税预付：按货值 × 目的国关税率
+- 最后一公里：$80-250（视距离）
+
+## 回复格式
+用 Markdown 回复，包含：
+1. 报价摘要（场景、路线、预估总价）
+2. 费用明细表
+3. 注意事项（含关税预估、特殊货物说明）
+4. 有效期（3个工作日）
+
+如用户信息不完整，先回复并追问关键信息（重量/体积/目的地/货物类型）。
+用人民币（¥）和美元（$）双币报价。`;
+}
+
+function buildCustomsSystemPrompt() {
+  return `你是 Jtour Logistics（捷途物流）的 AI 报关助手，专业解答中国出口跨境贸易的报关合规问题。
+
+## 知识库覆盖
+
+### 美国进口
+- 关税：MFN 基础税率 + Section 301 对华加征（7.5%-25%，部分清单已取消）
+- 必备单证：商业发票、装箱单、提单/空运单、FMCSA/FDA注册（食品/化妆品）
+- 海关机构：CBP（美国海关与边境保护局）
+- FBA：亚马逊要求 ISF 10+2（提前 24h 申报）
+- De Minimis：$800 免税额
+
+### 欧盟（德国/法国等）
+- VAT：德国19%，法国20%
+- CE认证：电子/玩具/机械必须
+- REACH法规：化学品申报
+- 必备单证：EUR.1 原产地证书（享受优惠税率时）
+
+### 英国（脱欧后）
+- 独立海关体系，MFN税率与EU不同
+- VAT：20%，低值免税额£135
+- UKCA认证（原CE认证）
+
+### 日本
+- PSE认证：电气产品必须
+- 食品：厚生劳动省检验
+- 木质包装：IPPC标识必须
+
+### 澳大利亚
+- GST：10%（A$1000以上征收）
+- 生物安全检查严格
+
+### 中国出口
+- 出口商品需有商品检验（CIQ）
+- 危险品需危险品证书
+- 木质包装：IPPC/植检证书
+
+## 回复规范
+- 针对用户查询，列出：①目的国关税率 ②必备报关单证 ③特殊合规要求 ④注意事项/风险提示
+- 用 **加粗** 标注关键税率和证书名称
+- 如涉及危险品/禁运品，用⚠️标注
+- 数据基于2024年，建议用户在实际报关前向专业报关行确认最新规定`;
+}
+
+// ── 消息渲染 ─────────────────────────────────────────────────
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const welcome = msgs.querySelector('.welcome-box');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'bot') + (currentAgent === 'customs' && role === 'bot' ? ' customs-agent' : '');
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'user' ? '👤' : (currentAgent === 'customs' ? '🛃' : '📦');
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = role === 'user' ? escHtml(text) : mdToHtml(text);
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function appendLoading() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot' + (currentAgent === 'customs' ? ' customs-agent' : '');
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = currentAgent === 'customs' ? '🛃' : '📦';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function replaceLoading(el, text, isError) {
+  const bubble = el.querySelector('.msg-bubble');
+  if (isError) {
+    bubble.style.background = '#fef2f2';
+    bubble.style.color = '#dc2626';
+    bubble.textContent = text;
+  } else {
+    bubble.innerHTML = mdToHtml(text);
+  }
+  document.getElementById('chat-messages').scrollTop = 9999;
+}
+
+function tryExtractQuote(text) {
+  const match = text.match(/[¥￥]([\d,]+)/);
+  if (match) {
+    const el = document.getElementById('quote-summary');
+    el.innerHTML = `
+      <div style="font-size:22px;font-weight:800;color:#0f172a;">¥${match[1]}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${currentScene} · 参考报价</div>
+    `;
+  }
+}
+
+// ── Markdown → HTML ──────────────────────────────────────────
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function mdToHtml(md) {
+  if (!md) return '';
+  let h = escHtml(md)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)+/g, m => '<ul>' + m + '</ul>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  if (!h.startsWith('<h') && !h.startsWith('<ul') && !h.startsWith('<hr')) h = '<p>' + h + '</p>';
+  return h;
+}
+
+function clearChat() {
+  const isCustoms = currentAgent === 'customs';
+  document.getElementById('chat-messages').innerHTML = `
+    <div class="welcome-box">
+      <div class="welcome-icon">${isCustoms ? '🛃' : '📦'}</div>
+      <h3>${isCustoms ? '报关助手已就绪' : '报价精灵已就绪'}</h3>
+      <p>${isCustoms ? '请告诉我您要出口到哪个国家，发什么货物。' : '告诉我您的货物信息，我来给您生成详细报价。<br><br><em>首次使用请点击右上角"配置 API Key"</em>'}</p>
+    </div>`;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+</script>
+</body>
+</html>
