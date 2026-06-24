@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="0;url=/">
+<title>Redirecting — Jtour Logistics</title>
+</head>
+<body>
+<script>
+// GitHub Pages SPA redirect
+const path = window.location.pathname;
+const query = window.location.search;
+window.location.href = '/' + (path ? '?p=' + path + query : '');
+</script>
+</body>
+</html>
