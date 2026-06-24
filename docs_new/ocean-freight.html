@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean Freight Services | Jtour Global Logistics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #1e3a5f; --secondary: #2c5282; --accent: #e67e22; --light: #f8fafc; --dark: #1a202c; --text: #4a5568; --border: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; color: var(--text); line-height: 1.6; background: var(--light); }
+        .header-top { background: var(--primary); color: white; padding: 10px 0; font-size: 14px; }
+        .header-top .container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header-top a { color: white; text-decoration: none; margin-left: 20px; }
+        .contact-info { display: flex; gap: 25px; }
+        .contact-info span { display: flex; align-items: center; gap: 8px; }
+        nav { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 70px; width: auto; }
+        .nav-menu { display: flex; gap: 2px; list-style: none; white-space: nowrap; margin-left: -20px; }
+        .nav-menu a { color: var(--dark); text-decoration: none; padding: 10px 12px; font-weight: 500; font-size: 13px; border-radius: 6px; transition: all 0.3s; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--accent); background: rgba(230, 126, 34, 0.1); }
+        .nav-cta { background: var(--accent) !important; color: white !important; padding: 12px 24px !important; border-radius: 8px !important; }
+        .mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
+        .mobile-toggle span { width: 25px; height: 3px; background: var(--primary); border-radius: 2px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Hero */
+        .page-hero { background: linear-gradient(135deg, #0d2b4e 0%, #1e3a5f 50%, #2d6a9f 100%); padding: 80px 0; color: white; text-align: center; position: relative; overflow: hidden; }
+        .page-hero::before { content: '🚢'; font-size: 200px; position: absolute; right: -30px; top: -20px; opacity: 0.06; }
+        .page-hero h1 { font-size: 46px; margin-bottom: 15px; font-weight: 700; }
+        .page-hero p { font-size: 19px; opacity: 0.9; max-width: 700px; margin: 0 auto 30px; }
+        .hero-tags { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .hero-tag { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 20px; border-radius: 20px; font-size: 14px; }
+
+        /* Route Section */
+        .section { padding: 70px 0; }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 32px; color: var(--primary); margin-bottom: 12px; font-weight: 700; }
+        .section-title p { font-size: 17px; color: var(--text); max-width: 700px; margin: 0 auto; }
+        .section-title .highlight { color: var(--accent); font-weight: 700; }
+
+        /* Route Cards */
+        .route-card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 40px; border-left: 5px solid var(--accent); }
+        .route-card.china { border-left-color: #e74c3c; }
+        .route-card.vietnam { border-left-color: #e67e22; }
+        .route-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .route-flag { font-size: 48px; }
+        .route-info h3 { font-size: 26px; color: var(--primary); font-weight: 700; margin-bottom: 6px; }
+        .route-info .sub { font-size: 16px; color: var(--text); }
+        .route-badge { margin-left: auto; background: var(--primary); color: white; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .route-badge.top { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .ports-row { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding: 20px; background: var(--light); border-radius: 12px; flex-wrap: wrap; }
+        .port-group { display: flex; flex-direction: column; gap: 6px; }
+        .port-label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        .port-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .port-tag { background: white; border: 1.5px solid var(--primary); color: var(--primary); padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .arrow-icon { font-size: 28px; color: var(--accent); flex-shrink: 0; }
+        .dest-port-tag { background: var(--primary); color: white; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .service-box { background: var(--light); border-radius: 12px; padding: 25px; }
+        .service-box h4 { font-size: 18px; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .service-box ul { list-style: none; }
+        .service-box li { padding: 9px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; }
+        .service-box li:last-child { border-bottom: none; }
+        .service-box li::before { content: '✦'; color: var(--accent); font-size: 11px; margin-top: 3px; flex-shrink: 0; }
+        .transit-bar { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
+        .transit-item { flex: 1; min-width: 140px; background: white; border-radius: 10px; padding: 15px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .transit-item .num { font-size: 24px; font-weight: 700; color: var(--accent); }
+        .transit-item .label { font-size: 12px; color: var(--text); margin-top: 4px; }
+
+        /* FCL vs LCL */
+        .compare-section { background: white; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .compare-card { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+        .compare-card-header { padding: 25px 30px; color: white; }
+        .compare-card-header.fcl { background: linear-gradient(135deg, var(--primary), #2c5282); }
+        .compare-card-header.lcl { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .compare-card-header h3 { font-size: 22px; margin-bottom: 6px; }
+        .compare-card-header p { font-size: 14px; opacity: 0.9; }
+        .compare-card-body { background: white; padding: 25px 30px; }
+        .compare-card-body ul { list-style: none; }
+        .compare-card-body li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.5; }
+        .compare-card-body li:last-child { border-bottom: none; }
+        .check { color: #27ae60; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+        .container-types { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .container-tag { background: var(--light); border: 1.5px solid var(--primary); color: var(--primary); padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+
+        /* Process */
+        .process-section { background: var(--light); }
+        .process-steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; position: relative; }
+        .process-step { background: white; border-radius: 12px; padding: 20px 15px; text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,0.06); position: relative; }
+        .process-step::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 18px; z-index: 1; }
+        .process-step:last-child::after { display: none; }
+        .step-num { width: 36px; height: 36px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin: 0 auto 10px; }
+        .step-icon { font-size: 28px; margin-bottom: 8px; }
+        .step-title { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .step-desc { font-size: 11px; color: var(--text); line-height: 1.4; }
+
+        /* Advantages */
+        .adv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .adv-card { background: white; border-radius: 14px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .adv-card:hover { transform: translateY(-5px); }
+        .adv-icon { font-size: 42px; margin-bottom: 15px; }
+        .adv-card h4 { font-size: 18px; color: var(--primary); margin-bottom: 10px; font-weight: 700; }
+        .adv-card p { font-size: 14px; line-height: 1.7; }
+
+        /* CTA */
+        .cta-section { background: linear-gradient(135deg, var(--primary), #2c5282); padding: 70px 0; text-align: center; color: white; }
+        .cta-section h2 { font-size: 34px; margin-bottom: 15px; }
+        .cta-section p { font-size: 18px; opacity: 0.9; margin-bottom: 35px; }
+        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 15px 35px; border-radius: 10px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #d35400; transform: translateY(-2px); }
+        .btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.5); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+        /* Footer */
+        footer { background: var(--dark); color: white; padding: 40px 0 20px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+        .footer-about h3 { font-size: 20px; margin-bottom: 10px; }
+        .footer-about p { color: #a0aec0; font-size: 14px; }
+        .footer-links h4 { font-size: 14px; margin-bottom: 15px; color: var(--accent); }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 8px; }
+        .footer-links a { color: #a0aec0; text-decoration: none; font-size: 14px; }
+        .footer-bottom { border-top: 1px solid #2d3748; padding-top: 20px; font-size: 14px; color: #a0aec0; }
+
+        @media (max-width: 992px) {
+            .service-grid { grid-template-columns: 1fr; }
+            .compare-grid { grid-template-columns: 1fr; }
+            .adv-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-steps { grid-template-columns: repeat(3, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .mobile-toggle { display: flex; }
+            .page-hero h1 { font-size: 30px; }
+            .process-steps { grid-template-columns: repeat(2, 1fr); }
+            .process-step::after { display: none; }
+            .adv-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .ports-row { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="contact-info">
+                    <span>📞 (989) 906 0407</span>
+                    <span>✉️ info@jtour.ai</span>
+                </div>
+                <div><a href="quote.html">Get Quote</a><a href="contact.html">Contact Us</a></div>
+            </div>
+        </div>
+        <nav>
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <img src="logo.svg" alt="JTOUR Global Logistics" style="height:70px;">
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="ocean-freight.html" class="active">Ocean Freight</a></li>
+                    <li><a href="air-freight.html">Air Freight</a></li>
+                    <li><a href="amazon-fba.html">FBA Shipping</a></li>
+                    <li><a href="customs.html">Customs</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="quote.html" class="nav-cta">Get Quote</a></li>
+                </ul>
+                <div class="mobile-toggle"><span></span><span></span><span></span></div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>🚢 Ocean Freight Services</h1>
+            <p>Our core business — reliable, cost-effective sea freight solutions from <strong>China</strong> and <strong>Vietnam</strong> to the <strong>United States</strong></p>
+            <div class="hero-tags">
+                <span class="hero-tag">🇨🇳 China → USA</span>
+                <span class="hero-tag">🇻🇳 Vietnam → USA</span>
+                <span class="hero-tag">📦 FCL Full Container</span>
+                <span class="hero-tag">📫 LCL Consolidation</span>
+                <span class="hero-tag">🏭 Door-to-Door DDP</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Core Routes -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Core Ocean Freight Routes</h2>
+                <p>Jtour Logistics specializes in transpacific ocean freight — China &amp; Vietnam to USA &amp; Canada. We offer <span class="highlight">weekly sailings</span> with stable transit times and competitive all-in rates.</p>
+            </div>
+
+            <!-- Route 1: China to USA -->
+            <div class="route-card china">
+                <div class="route-header">
+                    <div class="route-flag">🇨🇳</div>
+                    <div class="route-info">
+                        <h3>China → United States</h3>
+                        <div class="sub">Our Primary Route — High volume, competitive rates, reliable schedules</div>
+                    </div>
+                    <div class="route-badge top">⭐ PRIMARY ROUTE</div>
+                </div>
+
+                <!-- Ports -->
+                <div class="ports-row">
+                    <div class="port-group">
+                        <span class="port-label">🇨🇳 Origin Ports (China)</span>
+                        <div class="port-tags">
+                            <span class="port-tag">Shanghai (SHA)</span>
+                            <span class="port-tag">Ningbo (NGB)</span>
+                            <span class="port-tag">Yantian / Shenzhen (YTN)</span>
+                        </div>
+                    </div>
+                    <div class="arrow-icon">⟶</div>
+                    <div class="port-group">
+                        <span class="port-label">🇺🇸 Destination Ports (USA)</span>
+                        <div class="port-tags">
+                            <span class="dest-port-tag">Memphis (MEM) ⭐</span>
+                            <span class="dest-port-tag">Chicago (ORD) ⭐</span>
+                            <span class="dest-port-tag">Los Angeles (LA/LB)</span>
+                            <span class="dest-port-tag">Long Beach (LB)</span>
+                            <span class="dest-port-tag">New York (NY)</span>
+                            <span class="dest-port-tag">Savannah (SAV)</span>
+                            <span class="dest-port-tag">Seattle (SEA)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transit Times -->
+                <div class="transit-bar">
+                    <div class="transit-item">
+                        <div class="num">19–23</div>
+                        <div class="label">Days — Shanghai/Ningbo → LA/LB</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">21–25</div>
+                        <div class="label">Days — Yantian → LA/LB</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">30–35</div>
+                        <div class="label">Days — Shanghai → New York</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">Weekly</div>
+                        <div class="label">Sailings — Multiple carriers available</div>
+                    </div>
+                </div>
+
+                <!-- FCL & LCL Details -->
+                <div class="service-grid" style="margin-top: 25px;">
+                    <div class="service-box">
+                        <h4>🚢 FCL — Full Container Load</h4>
+                        <ul>
+                            <li>20GP, 40GP, 40HC, 40HQ container options</li>
+                            <li>Ideal for cargo volume over 15 CBM</li>
+                            <li>Dedicated container — no cargo mixing</li>
+                            <li>Port-to-port or door-to-door delivery</li>
+                            <li>DDP (Delivered Duty Paid) available — U.S. import customs &amp; duties included</li>
+                            <li>Factory pickup available from major manufacturing regions (Guangdong, Zhejiang, Jiangsu)</li>
+                            <li>Hazmat and special cargo handled with proper documentation</li>
+                            <li>Real-time container tracking via shipping line + our system</li>
+                        </ul>
+                        <div class="container-types">
+                            <span class="container-tag">20GP</span>
+                            <span class="container-tag">40GP</span>
+                            <span class="container-tag">40HC</span>
+                            <span class="container-tag">40HQ</span>
+                        </div>
+                    </div>
+                    <div class="service-box">
+                        <h4>📦 LCL — Less than Container Load</h4>
+                        <ul>
+                            <li>Minimum shipment: 2 CBM</li>
+                            <li>Ideal for cargo under 15 CBM</li>
+                            <li>Charged by CBM (cubic meter) or weight — whichever is greater</li>
+                            <li>Weekly consolidation departures from all major Chinese ports</li>
+                            <li>Co-loading with vetted cargo only — no dangerous goods mixing</li>
+                            <li>Cargo insurance available upon request</li>
+                            <li>Professional packing and labeling service available</li>
+                            <li>Suitable for Amazon FBA prep and e-commerce sellers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route 2: Vietnam to USA -->
+            <div class="route-card vietnam">
+                <div class="route-header">
+                    <div class="route-flag">🇻🇳</div>
+                    <div class="route-info">
+                        <h3>Vietnam → United States</h3>
+                        <div class="sub">Growing route — ideal for manufacturers shifting production from China</div>
+                    </div>
+                    <div class="route-badge">GROWING ROUTE</div>
+                </div>
+
+                <!-- Ports -->
+                <div class="ports-row">
+                    <div class="port-group">
+                        <span class="port-label">🇻🇳 Origin Port (Vietnam)</span>
+                        <div class="port-tags">
+                            <span class="port-tag">Ho Chi Minh City (HCM)</span>
+                        </div>
+                    </div>
+                    <div class="arrow-icon">⟶</div>
+                    <div class="port-group">
+                        <span class="port-label">🇺🇸 Destination Ports (USA)</span>
+                        <div class="port-tags">
+                            <span class="dest-port-tag">Memphis (MEM) ⭐</span>
+                            <span class="dest-port-tag">Chicago (ORD) ⭐</span>
+                            <span class="dest-port-tag">Los Angeles (LA/LB)</span>
+                            <span class="dest-port-tag">Long Beach (LB)</span>
+                            <span class="dest-port-tag">New York (NY)</span>
+                            <span class="dest-port-tag">Savannah (SAV)</span>
+                            <span class="dest-port-tag">Seattle (SEA)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transit Times -->
+                <div class="transit-bar">
+                    <div class="transit-item">
+                        <div class="num">23–27</div>
+                        <div class="label">Days — HCM → Los Angeles</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">33–40</div>
+                        <div class="label">Days — HCM → New York / East Coast</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">Weekly</div>
+                        <div class="label">Departures from HCM Port</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">0%</div>
+                        <div class="label">Section 301 Tariff (vs China)</div>
+                    </div>
+                </div>
+
+                <!-- FCL & LCL Details -->
+                <div class="service-grid" style="margin-top: 25px;">
+                    <div class="service-box">
+                        <h4>🚢 FCL — Full Container Load</h4>
+                        <ul>
+                            <li>20GP, 40GP, 40HC container options</li>
+                            <li>Direct weekly sailings from Ho Chi Minh City</li>
+                            <li>Well-suited for furniture, garment, footwear, electronics</li>
+                            <li>Door-to-door DDP service — U.S. customs clearance included</li>
+                            <li>Factory truck pickup in Ho Chi Minh City and surrounding industrial areas</li>
+                            <li>ISF (Importer Security Filing) filing service included</li>
+                            <li>Certificate of Origin (C/O) assistance and Form E processing</li>
+                            <li>Competitive all-in rates — lower base tariff than China shipments</li>
+                        </ul>
+                        <div class="container-types">
+                            <span class="container-tag">20GP</span>
+                            <span class="container-tag">40GP</span>
+                            <span class="container-tag">40HC</span>
+                        </div>
+                    </div>
+                    <div class="service-box">
+                        <h4>📦 LCL — Less than Container Load</h4>
+                        <ul>
+                            <li>Minimum shipment: 2 CBM</li>
+                            <li>Weekly consolidation from Ho Chi Minh City</li>
+                            <li>Mixed cargo consolidation with professional handling</li>
+                            <li>Transparent billing — no hidden charges</li>
+                            <li>ISF filing included in LCL service</li>
+                            <li>Cargo insurance available for high-value goods</li>
+                            <li>Great for small to mid-size importers sourcing from Vietnam</li>
+                            <li>Tariff advisory — guidance on HS code classification and duty rates</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route 3: China to Canada -->
+            <div class="route-card china">
+                <div class="route-header">
+                    <div class="route-flag">🇨🇳</div>
+                    <div class="route-info">
+                        <h3>China → Canada</h3>
+                        <div class="sub">Cross-Pacific Route — Vancouver, Toronto, Calgary, Montreal</div>
+                    </div>
+                    <div class="route-badge">🌎 NEW ROUTE</div>
+                </div>
+
+                <!-- Ports -->
+                <div class="ports-row">
+                    <div class="port-group">
+                        <span class="port-label">🇨🇳 Origin Ports (China)</span>
+                        <div class="port-tags">
+                            <span class="port-tag">Shanghai (SHA)</span>
+                            <span class="port-tag">Ningbo (NGB)</span>
+                            <span class="port-tag">Yantian / Shenzhen (YTN)</span>
+                            <span class="port-tag">Guangzhou (CAN)</span>
+                        </div>
+                    </div>
+                    <div class="arrow-icon">⟶</div>
+                    <div class="port-group">
+                        <span class="port-label">🇨🇦 Destination Ports (Canada)</span>
+                        <div class="port-tags">
+                            <span class="dest-port-tag">Vancouver (YVR)</span>
+                            <span class="dest-port-tag">Calgary (YYC)</span>
+                            <span class="dest-port-tag">Toronto (YYZ)</span>
+                            <span class="dest-port-tag">Montreal (YMX)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transit Times -->
+                <div class="transit-bar">
+                    <div class="transit-item">
+                        <div class="num">22–28</div>
+                        <div class="label">Days — Shanghai/Ningbo → Vancouver</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">30–35</div>
+                        <div class="label">Days — Shanghai → Toronto / Montreal</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">Weekly</div>
+                        <div class="label">Sailings from China</div>
+                    </div>
+                </div>
+
+                <!-- FCL & LCL Details -->
+                <div class="service-grid" style="margin-top: 25px;">
+                    <div class="service-box">
+                        <h4>🚢 FCL — Full Container Load</h4>
+                        <ul>
+                            <li>20GP, 40GP, 40HC container options</li>
+                            <li>Direct sailings to Vancouver — gateway to Western Canada</li>
+                            <li>Through-transit to Toronto, Calgary, Montreal via rail</li>
+                            <li>DDP service available — Canadian customs clearance included</li>
+                            <li>GST/HST handling assistance</li>
+                            <li>Rail connection to inland Canadian cities</li>
+                            <li>Competitive rates via Pacific Northwest route</li>
+                        </ul>
+                        <div class="container-types">
+                            <span class="container-tag">20GP</span>
+                            <span class="container-tag">40GP</span>
+                            <span class="container-tag">40HC</span>
+                        </div>
+                    </div>
+                    <div class="service-box">
+                        <h4>📦 LCL — Less than Container Load</h4>
+                        <ul>
+                            <li>Minimum shipment: 2 CBM</li>
+                            <li>Weekly consolidation from major Chinese ports</li>
+                            <li>Vancouver hub — fast rail connection to inland</li>
+                            <li>Montreal hub — direct access to Quebec and Eastern Canada</li>
+                            <li>Canadian customs clearance included</li>
+                            <li>GST payment service available</li>
+                            <li>Ideal for e-commerce and retail imports</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route 4: Vietnam to Canada -->
+            <div class="route-card vietnam">
+                <div class="route-header">
+                    <div class="route-flag">🇻🇳</div>
+                    <div class="route-info">
+                        <h3>Vietnam → Canada</h3>
+                        <div class="sub">Emerging Route — ideal for tariff diversification</div>
+                    </div>
+                    <div class="route-badge">🌎 GROWING</div>
+                </div>
+
+                <!-- Ports -->
+                <div class="ports-row">
+                    <div class="port-group">
+                        <span class="port-label">🇻🇳 Origin Port (Vietnam)</span>
+                        <div class="port-tags">
+                            <span class="port-tag">Ho Chi Minh City (HCM)</span>
+                        </div>
+                    </div>
+                    <div class="arrow-icon">⟶</div>
+                    <div class="port-group">
+                        <span class="port-label">🇨🇦 Destination Ports (Canada)</span>
+                        <div class="port-tags">
+                            <span class="dest-port-tag">Vancouver (YVR)</span>
+                            <span class="dest-port-tag">Toronto (YYZ)</span>
+                            <span class="dest-port-tag">Montreal (YMX)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transit Times -->
+                <div class="transit-bar">
+                    <div class="transit-item">
+                        <div class="num">25–30</div>
+                        <div class="label">Days — HCM → Vancouver</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">35–42</div>
+                        <div class="label">Days — HCM → Toronto / Montreal</div>
+                    </div>
+                    <div class="transit-item">
+                        <div class="num">Weekly</div>
+                        <div class="label">Departures from HCM Port</div>
+                    </div>
+                </div>
+
+                <!-- Service Details -->
+                <div class="service-grid" style="margin-top: 25px;">
+                    <div class="service-box">
+                        <h4>🚢 FCL — Full Container Load</h4>
+                        <ul>
+                            <li>20GP, 40GP, 40HC container options</li>
+                            <li>Tariff advantage vs. China origin goods</li>
+                            <li>DDP service to Canadian door</li>
+                            <li>GST handling included</li>
+                            <li>Growing capacity — book early recommended</li>
+                        </ul>
+                        <div class="container-types">
+                            <span class="container-tag">20GP</span>
+                            <span class="container-tag">40GP</span>
+                            <span class="container-tag">40HC</span>
+                        </div>
+                    </div>
+                    <div class="service-box">
+                        <h4>📦 LCL — Less than Container Load</h4>
+                        <ul>
+                            <li>Minimum shipment: 3 CBM</li>
+                            <li>Weekly consolidation from HCM</li>
+                            <li>Vancouver transshipment hub</li>
+                            <li>Rail connection to inland Canada</li>
+                            <li>Ideal for small to mid-size importers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FCL vs LCL Comparison -->
+    <section class="section compare-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>FCL vs. LCL — Which is Right for You?</h2>
+                <p>Not sure which service fits your shipment? Here's a quick guide to help you decide.</p>
+            </div>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <div class="compare-card-header fcl">
+                        <h3>🚢 Full Container Load (FCL)</h3>
+                        <p>Best for: Volume &gt; 15 CBM / High-value goods / Sensitive cargo</p>
+                    </div>
+                    <div class="compare-card-body">
+                        <ul>
+                            <li><span class="check">✓</span> Your own container — no sharing with other cargo</li>
+                            <li><span class="check">✓</span> Lower risk of damage during transit</li>
+                            <li><span class="check">✓</span> Faster transit time vs. LCL (no consolidation delays)</li>
+                            <li><span class="check">✓</span> Suitable for oversized or overweight cargo</li>
+                            <li><span class="check">✓</span> Cost-efficient when cargo fills 70%+ of container</li>
+                            <li><span class="check">✓</span> Better suited for DDP / Amazon FBA bulk orders</li>
+                            <li><span class="check">✓</span> Predictable all-in pricing</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="compare-card">
+                    <div class="compare-card-header lcl">
+                        <h3>📦 Less than Container Load (LCL)</h3>
+                        <p>Best for: Volume &lt; 15 CBM / Frequent small shipments / Startups</p>
+                    </div>
+                    <div class="compare-card-body">
+                        <ul>
+                            <li><span class="check">✓</span> Pay only for space you use (by CBM)</li>
+                            <li><span class="check">✓</span> No need to wait until you have a full container</li>
+                            <li><span class="check">✓</span> Ideal for e-commerce, Amazon FBA replenishment</li>
+                            <li><span class="check">✓</span> Lower upfront shipping cost vs. FCL</li>
+                            <li><span class="check">✓</span> Weekly departures — keeps inventory flowing</li>
+                            <li><span class="check">✓</span> Great for sample orders or new product testing</li>
+                            <li><span class="check">✓</span> Combines with air freight for split shipment strategies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LCL to FCL Bundle Service -->
+    <section class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #fdf6ee 100%);">
+        <div class="container">
+            <div class="section-title">
+                <h2>📦 LCL → FCL Bundle Service</h2>
+                <p>Combine multiple LCL shipments into a full container — <span class="highlight">best value for shipments between 15–60 CBM</span></p>
+            </div>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                <!-- What it is -->
+                <div style="background: white; border-radius: 16px; padding: 35px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 30px; border-top: 4px solid #8e44ad;">
+                    <h3 style="font-size: 22px; color: var(--primary); margin-bottom: 15px;">What is LCL to FCL?</h3>
+                    <p style="font-size: 16px; line-height: 1.8; color: var(--text);">When your cargo volume is too large for LCL (over 2 CBM minimum) but doesn't fill a full container, our <strong>LCL to FCL bundle service</strong> lets you combine your shipment with other carefully vetted cargo into a shared 20GP or 40HQ container — giving you FCL-like benefits at near-LCL pricing.</p>
+                </div>
+
+                <!-- How it works -->
+                <div style="background: white; border-radius: 16px; padding: 35px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 30px;">
+                    <h3 style="font-size: 22px; color: var(--primary); margin-bottom: 20px;">How It Works</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                        <div style="text-align: center; padding: 20px 10px; background: var(--light); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+                            <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 14px;">Step 1</div>
+                            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">Submit your cargo details — volume (CBM), weight, cargo type</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px 10px; background: var(--light); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                            <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 14px;">Step 2</div>
+                            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">We match your cargo with compatible shippers in our network</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px 10px; background: var(--light); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">🚢</div>
+                            <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 14px;">Step 3</div>
+                            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">All cargo consolidated into one 20GP or 40HQ container</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px 10px; background: var(--light); border-radius: 12px;">
+                            <div style="font-size: 32px; margin-bottom: 10px;">🚚</div>
+                            <div style="font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 14px;">Step 4</div>
+                            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">Shipped as FCL — delivered to your warehouse or FBA address</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Container Options -->
+                <div style="background: white; border-radius: 16px; padding: 35px 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); margin-bottom: 30px;">
+                    <h3 style="font-size: 22px; color: var(--primary); margin-bottom: 25px;">Choose Your Container</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                        <div style="border: 2px solid var(--primary); border-radius: 14px; padding: 30px; text-align: center;">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🚢</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">20GP Container</div>
+                            <div style="font-size: 14px; color: var(--text); margin-bottom: 15px;">Approx. 28–30 CBM usable</div>
+                            <div style="background: var(--light); border-radius: 8px; padding: 12px;">
+                                <div style="font-size: 13px; color: var(--text); margin-bottom: 8px;">Best for:</div>
+                                <div style="font-size: 14px; font-weight: 600; color: var(--primary);">15–30 CBM shipments</div>
+                            </div>
+                            <ul style="list-style: none; text-align: left; margin-top: 15px; font-size: 14px; color: var(--text);">
+                                <li style="padding: 6px 0; border-bottom: 1px solid var(--border);">✓ Fits ~15–30 standard cartons</li>
+                                <li style="padding: 6px 0; border-bottom: 1px solid var(--border);">✓ More affordable than 40HQ</li>
+                                <li style="padding: 6px 0;">✓ Ideal for Amazon FBA pallet loads</li>
+                            </ul>
+                        </div>
+                        <div style="border: 2px solid var(--accent); border-radius: 14px; padding: 30px; text-align: center; position: relative;">
+                            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 3px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;">POPULAR</div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">🚢</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 8px;">40HQ Container</div>
+                            <div style="font-size: 14px; color: var(--text); margin-bottom: 15px;">Approx. 65–68 CBM usable</div>
+                            <div style="background: var(--light); border-radius: 8px; padding: 12px;">
+                                <div style="font-size: 13px; color: var(--text); margin-bottom: 8px;">Best for:</div>
+                                <div style="font-size: 14px; font-weight: 600; color: var(--accent);">30–60 CBM shipments</div>
+                            </div>
+                            <ul style="list-style: none; text-align: left; margin-top: 15px; font-size: 14px; color: var(--text);">
+                                <li style="padding: 6px 0; border-bottom: 1px solid var(--border);">✓ Fits ~60–120 standard cartons</li>
+                                <li style="padding: 6px 0; border-bottom: 1px solid var(--border);">✓ Best cost-per-CBM ratio</li>
+                                <li style="padding: 6px 0;">✓ Great for full container e-commerce loads</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benefits -->
+                <div style="background: linear-gradient(135deg, var(--primary), #2c5282); border-radius: 16px; padding: 30px 40px; color: white;">
+                    <h3 style="font-size: 20px; margin-bottom: 20px; text-align: center;">Why Bundle with Jtour?</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">💰</div>
+                            <div style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">Lower Cost</div>
+                            <div style="font-size: 12px; opacity: 0.85; line-height: 1.5;">10–25% cheaper than booking a private FCL for the same volume</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">🔒</div>
+                            <div style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">Cargo Safety</div>
+                            <div style="font-size: 12px; opacity: 0.85; line-height: 1.5;">Vetted shippers only — no hazardous cargo mixing without disclosure</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">📊</div>
+                            <div style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">Clear Billing</div>
+                            <div style="font-size: 12px; opacity: 0.85; line-height: 1.5;">Pay only for your share of the container — no hidden consolidation fees</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shipping Process -->
+    <section class="section process-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>End-to-End Shipping Process</h2>
+                <p>From factory pickup to your warehouse door — we handle every step</p>
+            </div>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-num">1</div>
+                    <div class="step-icon">📋</div>
+                    <div class="step-title">Booking &amp; Quote</div>
+                    <div class="step-desc">Share cargo details — we provide all-in quote within 24h</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-num">2</div>
+                    <div class="step-icon">🏭</div>
+                    <div class="step-title">Factory Pickup</div>
+                    <div class="step-desc">Truck arranged from supplier's factory to origin port</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-num">3</div>
+                    <div class="step-icon">📦</div>
+                    <div class="step-title">Loading &amp; Stuffing</div>
+                    <div class="step-desc">Container loaded, sealed &amp; inspected at origin port</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-num">4</div>
+                    <div class="step-icon">🚢</div>
+                    <div class="step-title">Ocean Transit</div>
+                    <div class="step-desc">Real-time vessel tracking provided throughout voyage</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-num">5</div>
+                    <div class="step-icon">🛃</div>
+                    <div class="step-title">U.S. Customs</div>
+                    <div class="step-desc">ISF filing, ABI entry, duties &amp; exam coordination</div>
+                </div>
+                <div class="process-step">
+                    <div class="step-num">6</div>
+                    <div class="step-icon">🚚</div>
+                    <div class="step-title">Final Delivery</div>
+                    <div class="step-desc">Drayage to warehouse, Amazon FBA, or your door</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Jtour -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Jtour for Ocean Freight?</h2>
+                <p>More than 10 years of transpacific shipping experience behind every shipment</p>
+            </div>
+            <div class="adv-grid">
+                <div class="adv-card">
+                    <div class="adv-icon">💰</div>
+                    <h4>Competitive All-In Rates</h4>
+                    <p>Direct contracts with major carriers including COSCO, MSC, Evergreen, and ONE. No hidden fees — your quote includes origin charges, ocean freight, destination fees, and delivery.</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">📡</div>
+                    <h4>Real-Time Tracking</h4>
+                    <p>Monitor your shipment from origin to destination with live vessel tracking and proactive status updates via WhatsApp, email, or our client portal.</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🛃</div>
+                    <h4>U.S. Customs Expertise</h4>
+                    <p>Licensed U.S. customs brokers on our team. We handle ISF, ABI entry, FDA Prior Notice, and Lacey Act compliance. Experienced with Section 301 tariff strategies.</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🏭</div>
+                    <h4>China &amp; Vietnam Origin Network</h4>
+                    <p>Strong on-the-ground teams in Shanghai, Ningbo, Shenzhen/Yantian, and Ho Chi Minh City. Factory pickup, cargo inspection, and loading supervision available.</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">📦</div>
+                    <h4>Amazon FBA Specialist</h4>
+                    <p>We understand Amazon's strict receiving requirements. FBA-ready labeling, carton prep, and delivery appointments at fulfillment centers included in our FBA package.</p>
+                </div>
+                <div class="adv-card">
+                    <div class="adv-icon">🔒</div>
+                    <h4>Cargo Insurance</h4>
+                    <p>Institute Cargo Clause (A) marine insurance available for all ocean shipments. We'll help you choose the right coverage to protect your goods at sea.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Ship from China or Vietnam?</h2>
+            <p>Get a free, no-obligation ocean freight quote within 24 hours.</p>
+            <div class="btn-group">
+                <a href="quote.html" class="btn btn-primary">🧮 Get Free Quote Now</a>
+                <a href="contact.html" class="btn btn-secondary">📞 Talk to Our Team</a>
+            </div>
+            <p style="margin-top: 25px; font-size: 15px; opacity: 0.8;">📞 (989) 906 0407 &nbsp;|&nbsp; ✉️ info@jtour.ai</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>JTOUR Logistics</h3>
+                    <p>Specialized in transpacific ocean freight since 2013. China &amp; Vietnam to USA &amp; Canada sea freight experts — FCL, LCL, and DDP door-to-door solutions.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Ocean Freight</h4>
+                    <ul>
+                        <li><a href="ocean-freight.html">China → USA</a></li>
+                        <li><a href="ocean-freight.html">Vietnam → USA</a></li>
+                        <li><a href="amazon-fba.html">FBA Shipping</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="services.html">All Services</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="quote.html">Get Quote</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>📞 (989) 906 0407</li>
+                        <li>✉️ info@jtour.ai</li>
+                        <li>🌐 jtour.ai</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom"><p>© 2026 JTOUR Logistics. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+    <script>document.querySelector('.mobile-toggle').addEventListener('click', () => { document.querySelector('.nav-menu').classList.toggle('show'); });</script>
+</body>
+</html>

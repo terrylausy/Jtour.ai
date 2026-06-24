@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Pages 部署指南 — Jtour Logistics</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+.container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-size: 28px; margin-bottom: 8px; }
+h1 span { background: linear-gradient(135deg,#1a73e8,#7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: #64748b; margin-bottom: 40px; font-size: 15px; }
+.step { background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 28px 32px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: linear-gradient(135deg,#1a73e8,#1557b0); color: white; border-radius: 50%; font-weight: 700; font-size: 14px; margin-right: 12px; flex-shrink: 0; }
+.step-header { display: flex; align-items: center; margin-bottom: 16px; }
+.step-title { font-size: 17px; font-weight: 700; }
+.step-desc { color: #475569; font-size: 14px; margin-bottom: 16px; }
+pre { background: #0f172a; color: #e2e8f0; padding: 16px 20px; border-radius: 10px; font-size: 13px; overflow-x: auto; margin: 12px 0; line-height: 1.8; }
+code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #dc2626; }
+.tip { background: #eff6ff; border-left: 4px solid #1a73e8; padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 13px; margin: 12px 0; color: #1e40af; }
+.warn { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 13px; margin: 12px 0; color: #92400e; }
+.success { background: #f0fdf4; border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 13px; margin: 12px 0; color: #065f46; }
+img { max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; margin: 12px 0; }
+.btn { display: inline-block; padding: 10px 24px; background: #1a73e8; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; margin-right: 10px; }
+.btn.ghost { background: none; border: 1.5px solid #1a73e8; color: #1a73e8; }
+.file-tree { background: #1e293b; color: #94a3b8; padding: 16px 20px; border-radius: 10px; font-family: monospace; font-size: 13px; line-height: 2; margin: 12px 0; }
+.file-tree .dir { color: #60a5fa; }
+.file-tree .file { color: #a3e635; }
+.file-tree .comment { color: #64748b; font-style: italic; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+th { background: #f1f5f9; padding: 10px 14px; border: 1px solid #e2e8f0; text-align: left; font-weight: 600; }
+td { padding: 9px 14px; border: 1px solid #e2e8f0; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge.green { background: #d1fae5; color: #065f46; }
+.badge.blue { background: #dbeafe; color: #1d4ed8; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🚀 <span>Jtour Logistics</span> GitHub Pages 部署指南</h1>
+  <p class="subtitle">5步完成部署，网站永久运行，零服务器成本 · 预计耗时 15 分钟</p>
+
+  <!-- 概览 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-title">📋 部署方案说明</div>
+    </div>
+    <div class="step-desc">GitHub Pages 是免费的静态网站托管服务。我们把前端代码放在 <code>docs/</code> 目录，GitHub 自动将其发布为网站。</div>
+    <table>
+      <tr><th>项目</th><th>说明</th><th>状态</th></tr>
+      <tr><td>托管费用</td><td>完全免费</td><td><span class="badge green">✅ 免费</span></td></tr>
+      <tr><td>HTTPS</td><td>GitHub 自动提供 SSL 证书</td><td><span class="badge green">✅ 自动</span></td></tr>
+      <tr><td>自定义域名</td><td>支持 jtour.ai</td><td><span class="badge blue">📌 需配置</span></td></tr>
+      <tr><td>后端 API</td><td>AI 调用直接从浏览器发出（DeepSeek/OpenAI）</td><td><span class="badge green">✅ 无需服务器</span></td></tr>
+    </table>
+    <div class="file-tree">
+      <div><span class="dir">docs/</span>  <span class="comment">← GitHub Pages 根目录</span></div>
+      <div>&nbsp;&nbsp;<span class="file">index.html</span>  <span class="comment">← 主页（报价精灵+报关助手）</span></div>
+      <div>&nbsp;&nbsp;<span class="file">404.html</span>   <span class="comment">← 路由回退页</span></div>
+      <div>&nbsp;&nbsp;<span class="file">CNAME</span>      <span class="comment">← 自定义域名（内容：jtour.ai）</span></div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">创建 GitHub 账号 & 仓库</div>
+    </div>
+    <div class="step-desc">如果你还没有 GitHub 账号，先注册：<a href="https://github.com/signup" target="_blank">github.com/signup</a></div>
+    <p style="font-size:14px;margin-bottom:12px;"><strong>创建新仓库：</strong></p>
+    <ol style="font-size:14px;padding-left:20px;line-height:2.2;">
+      <li>登录 GitHub → 点击右上角 <code>+</code> → <strong>New repository</strong></li>
+      <li>Repository name 填写：<code>jtour-ai</code>（或任意名称）</li>
+      <li>设为 <strong>Public</strong>（GitHub Pages 免费版需要公开仓库）</li>
+      <li>勾选 <strong>Add a README file</strong></li>
+      <li>点击 <strong>Create repository</strong></li>
+    </ol>
+    <div class="tip">💡 仓库名建议用 <code>jtour-ai</code>，以后 GitHub Pages 默认域名是 <code>yourname.github.io/jtour-ai</code></div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">安装 Git 并上传代码</div>
+    </div>
+    <div class="step-desc">在你的电脑上，打开 PowerShell 或 CMD，执行以下命令：</div>
+
+    <p style="font-size:14px;font-weight:600;margin-bottom:8px;">① 安装 Git（如已安装可跳过）</p>
+    <p style="font-size:13px;color:#64748b;margin-bottom:8px;">下载地址：<a href="https://git-scm.com/download/win" target="_blank">git-scm.com</a></p>
+
+    <p style="font-size:14px;font-weight:600;margin:16px 0 8px;">② 初始化并推送代码</p>
+    <p style="font-size:13px;color:#64748b;margin-bottom:8px;">把下面命令中的 <code>YOUR_GITHUB_USERNAME</code> 替换成你的 GitHub 用户名：</p>
+    <pre>cd C:\Users\49563\Documents\geek2ai
+
+# 初始化 Git 仓库
+git init
+git add docs/
+git commit -m "feat: Jtour Logistics AI Platform v2.0"
+
+# 连接远程仓库（替换用户名）
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/jtour-ai.git
+git branch -M main
+git push -u origin main</pre>
+
+    <div class="tip">💡 推送时 GitHub 会要求登录，输入你的 GitHub 用户名和密码（或 Personal Access Token）</div>
+    <div class="warn">⚠️ 如果提示 Token 认证，去 GitHub → Settings → Developer settings → Personal access tokens → 创建一个新 Token，勾选 <code>repo</code> 权限</div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">开启 GitHub Pages</div>
+    </div>
+    <ol style="font-size:14px;padding-left:20px;line-height:2.5;">
+      <li>进入你的仓库页面：<code>github.com/YOUR_USERNAME/jtour-ai</code></li>
+      <li>点击上方 <strong>Settings</strong> 标签</li>
+      <li>左侧菜单找到 <strong>Pages</strong></li>
+      <li>Build and deployment → Source 选择 <strong>Deploy from a branch</strong></li>
+      <li>Branch 选 <code>main</code>，目录选 <code>/docs</code></li>
+      <li>点击 <strong>Save</strong></li>
+    </ol>
+    <div class="success">✅ 保存后等待 1-3 分钟，GitHub 会自动构建并发布网站</div>
+    <div class="tip">💡 Pages 页面会显示 <code>Your site is live at https://yourname.github.io/jtour-ai</code></div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">绑定自定义域名 jtour.ai</div>
+    </div>
+    <div class="step-desc">CNAME 文件已经写好了（内容是 <code>jtour.ai</code>），只需在阿里云国际站添加 DNS 记录。</div>
+
+    <p style="font-size:14px;font-weight:600;margin-bottom:8px;">① 在 GitHub Pages 设置中填写域名</p>
+    <ol style="font-size:14px;padding-left:20px;line-height:2.2;">
+      <li>Settings → Pages → Custom domain</li>
+      <li>填入 <code>jtour.ai</code> 并点击 Save</li>
+    </ol>
+
+    <p style="font-size:14px;font-weight:600;margin:16px 0 8px;">② 在阿里云国际站添加 DNS 记录</p>
+    <p style="font-size:13px;color:#64748b;margin-bottom:8px;">登录 <a href="https://www.alibabacloud.com/product/dns" target="_blank">阿里云国际站</a> → DNS 解析 → jtour.ai → 添加记录</p>
+    <table>
+      <tr><th>记录类型</th><th>主机记录</th><th>记录值</th><th>说明</th></tr>
+      <tr><td>CNAME</td><td>@</td><td>YOUR_USERNAME.github.io</td><td>根域名 → GitHub Pages</td></tr>
+      <tr><td>CNAME</td><td>www</td><td>YOUR_USERNAME.github.io</td><td>www → GitHub Pages</td></tr>
+    </table>
+    <div class="warn">⚠️ 把 <code>YOUR_USERNAME</code> 替换成你的 GitHub 用户名，例如 <code>henry-jtour.github.io</code></div>
+    <div class="tip">💡 DNS 生效需要 10 分钟~1 小时，生效后 HTTPS 会自动申请</div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-title">配置 AI API Key 并开始使用</div>
+    </div>
+    <div class="step-desc">网站部署完成后，首次访问会弹出 API Key 配置框。</div>
+    <ol style="font-size:14px;padding-left:20px;line-height:2.5;">
+      <li>访问 <a href="https://jtour.ai" target="_blank">jtour.ai</a>（或 GitHub Pages 临时域名）</li>
+      <li>弹出配置框 → 选择 AI 服务（推荐 <strong>DeepSeek</strong>，国内快且便宜）</li>
+      <li>注册 DeepSeek 账号：<a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> → 创建 API Key</li>
+      <li>填入 API Key → 点击"保存并开始使用"</li>
+    </ol>
+    <div class="success">🎉 配置完成！报价精灵和报关助手立刻可用，密钥保存在您的浏览器本地</div>
+
+    <p style="font-size:14px;font-weight:600;margin:16px 0 8px;">DeepSeek API 费用参考（超低）</p>
+    <table>
+      <tr><th>用量</th><th>费用</th></tr>
+      <tr><td>每次报价查询 (~500 tokens)</td><td>约 ¥0.001</td></tr>
+      <tr><td>每天 100 次查询</td><td>约 ¥0.1</td></tr>
+      <tr><td>每月运营成本</td><td>约 ¥3-10</td></tr>
+    </table>
+  </div>
+
+  <!-- 完成 -->
+  <div style="text-align:center;padding:40px 0;">
+    <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+    <h2 style="font-size:22px;margin-bottom:8px;">部署完成！</h2>
+    <p style="color:#64748b;margin-bottom:24px;">Jtour Logistics AI 平台已上线，告别服务器烦恼</p>
+    <a href="https://jtour.ai" class="btn" target="_blank">🌐 访问 jtour.ai</a>
+    <a href="index.html" class="btn ghost">返回主页</a>
+  </div>
+</div>
+</body>
+</html>
