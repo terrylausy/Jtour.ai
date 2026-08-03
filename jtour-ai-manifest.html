@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manifest Filing | Jtour AI — Automated AMS/ISF & VGM Submission</title>
+    <meta name="description" content="Jtour AI Manifest Filing automates AMS, ISF 10+2, and VGM submissions to 18+ US port agents and 70+ carriers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-deep: #02040a; --bg-dark: #0a0f1c; --bg-card: rgba(15, 23, 42, 0.7);
+            --bg-glass: rgba(30, 41, 59, 0.4); --cyan: #00f0ff; --cyan-glow: rgba(0, 240, 255, 0.3);
+            --purple: #a855f7; --purple-glow: rgba(168, 85, 247, 0.3); --blue: #3b82f6;
+            --accent: #f59e0b; --text: #94a3b8; --text-light: #e2e8f0; --text-white: #ffffff;
+            --border: rgba(148, 163, 184, 0.15); --success: #10b981; --danger: #ef4444;
+        }
+        body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg-deep); line-height: 1.6; overflow-x: hidden; }
+        ::selection { background: var(--cyan-glow); color: var(--text-white); }
+        .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px; pointer-events: none; z-index: 0; }
+        .glow-orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+        .glow-orb.cyan { width: 500px; height: 500px; background: var(--cyan-glow); top: -200px; right: -100px; }
+        .glow-orb.purple { width: 400px; height: 400px; background: var(--purple-glow); bottom: 10%; left: -150px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        .header-top { background: rgba(2,4,10,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); color: var(--text); padding: 10px 0; font-size: 13px; }
+        .header-top .container { display: flex; justify-content: space-between; align-items: center; }
+        .header-top a { color: var(--text); text-decoration: none; transition: color 0.3s; }
+        .header-top a:hover { color: var(--cyan); }
+        .contact-info { display: flex; gap: 25px; }
+        .contact-info span { display: flex; align-items: center; gap: 8px; }
+        .back-link { background: var(--bg-glass); border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; font-size: 13px; transition: all 0.3s; backdrop-filter: blur(10px); }
+        .back-link:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        nav { background: rgba(2,4,10,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo img { height: 44px; width: auto; }
+        .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .logo-text .brand { font-size: 22px; font-weight: 800; color: var(--text-white); letter-spacing: -0.5px; }
+        .logo-text .brand span { color: var(--cyan); }
+        .logo-text .sub { font-size: 12px; color: var(--text); font-weight: 500; letter-spacing: 2px; }
+        .nav-menu { display: flex; gap: 4px; list-style: none; white-space: nowrap; }
+        .nav-menu a { color: var(--text); text-decoration: none; padding: 10px 16px; font-weight: 500; font-size: 14px; border-radius: 8px; transition: all 0.3s; }
+        .nav-menu a:hover { color: var(--cyan); background: rgba(0,240,255,0.08); }
+        .nav-cta { background: linear-gradient(135deg, var(--cyan), var(--blue)) !important; color: var(--bg-deep) !important; padding: 10px 24px !important; border-radius: 8px !important; font-weight: 700 !important; }
+        .nav-cta:hover { box-shadow: 0 0 20px var(--cyan-glow); }
+        .mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
+        .mobile-toggle span { width: 25px; height: 2px; background: var(--text-light); border-radius: 2px; }
+
+        .product-bar { background: linear-gradient(90deg, rgba(0,240,255,0.08), rgba(168,85,247,0.08)); border-bottom: 1px solid var(--border); padding: 16px 0; }
+        .product-bar .container { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .product-bar a { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-glass); border: 1px solid var(--border); padding: 10px 20px; border-radius: 10px; color: var(--text-light); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.3s; backdrop-filter: blur(10px); }
+        .product-bar a:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
+        .product-bar a.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.08); }
+
+        .hero { padding: 80px 0 60px; position: relative; overflow: hidden; }
+        .hero h1 { font-size: 44px; line-height: 1.15; margin-bottom: 20px; font-weight: 800; color: var(--text-white); letter-spacing: -1px; text-align: center; }
+        .hero h1 .gradient-text { background: linear-gradient(135deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 18px; color: var(--text); margin-bottom: 32px; line-height: 1.7; max-width: 640px; margin-left: auto; margin-right: auto; text-align: center; }
+
+        .section { padding: 80px 0; position: relative; }
+        .section h2 { font-size: 36px; color: var(--text-white); text-align: center; margin-bottom: 16px; font-weight: 800; }
+        .section h2 .highlight { color: var(--cyan); }
+        .section-subtitle { text-align: center; color: var(--text); font-size: 17px; margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; backdrop-filter: blur(20px); transition: all 0.4s; }
+        .card:hover { border-color: rgba(0,240,255,0.3); box-shadow: 0 0 40px rgba(0,240,255,0.08); transform: translateY(-4px); }
+        .card-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 20px; background: linear-gradient(135deg, var(--cyan), var(--blue)); }
+        .card h3 { color: var(--text-white); font-size: 20px; margin-bottom: 12px; font-weight: 700; }
+        .card p { color: var(--text); font-size: 15px; line-height: 1.7; }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.3s; border: none; cursor: pointer; }
+        .btn-primary { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: var(--bg-deep); font-weight: 700; }
+        .btn-primary:hover { box-shadow: 0 0 30px var(--cyan-glow); transform: translateY(-2px); }
+        .btn-secondary { background: var(--bg-glass); color: var(--text-light); border: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+
+        .cta-section { background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(0,240,255,0.1)); padding: 80px 0; text-align: center; position: relative; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .cta-section h2 { font-size: 36px; margin-bottom: 16px; color: var(--text-white); }
+        .cta-section p { font-size: 17px; color: var(--text); margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        footer { background: var(--bg-deep); border-top: 1px solid var(--border); padding: 60px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 40px; }
+        .footer-about h3 { font-size: 22px; margin-bottom: 16px; color: var(--text-white); }
+        .footer-about h3 span { color: var(--cyan); }
+        .footer-about p { color: var(--text); font-size: 14px; line-height: 1.8; }
+        .footer-links h4 { font-size: 16px; margin-bottom: 20px; color: var(--cyan); }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: var(--text); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--cyan); }
+        .footer-bottom { border-top: 1px solid var(--border); padding-top: 30px; display: flex; justify-content: space-between; font-size: 13px; color: var(--text); flex-wrap: wrap; gap: 10px; }
+
+        .tag { display: inline-block; background: rgba(0,240,255,0.1); color: var(--cyan); padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid rgba(0,240,255,0.2); }
+        .demo-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; backdrop-filter: blur(20px); }
+        .demo-box h4 { color: var(--cyan); font-size: 14px; font-weight: 600; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; }
+        .code-line { display: flex; gap: 12px; padding: 6px 0; font-size: 14px; font-family: 'JetBrains Mono', monospace; }
+        .code-line .num { color: var(--text); min-width: 24px; text-align: right; }
+        .code-line .code { color: var(--text-light); }
+        .code-line .code .key { color: var(--purple); }
+        .code-line .code .str { color: var(--cyan); }
+        .code-line .code .numb { color: var(--accent); }
+
+        .step-row { display: flex; align-items: flex-start; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+        .step-row:last-child { border-bottom: none; }
+        .step-num { width: 40px; height: 40px; background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--bg-deep); flex-shrink: 0; font-size: 16px; }
+        .step-content h4 { color: var(--text-white); font-size: 17px; margin-bottom: 6px; }
+        .step-content p { color: var(--text); font-size: 14px; line-height: 1.6; }
+
+        .metric-card { text-align: center; padding: 28px; }
+        .metric-card .val { font-size: 36px; font-weight: 800; color: var(--cyan); margin-bottom: 8px; }
+        .metric-card .lab { font-size: 14px; color: var(--text-white); font-weight: 600; }
+        .metric-card .desc { font-size: 13px; color: var(--text); margin-top: 6px; }
+
+        @media (max-width: 992px) {
+            .hero h1 { font-size: 32px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 576px) {
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-deep); flex-direction: column; padding: 20px; border-bottom: 1px solid var(--border); }
+            .nav-menu.show { display: flex; }
+            .mobile-toggle { display: flex; }
+            .grid-4 { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .section h2 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="glow-orb cyan"></div>
+    <div class="glow-orb purple"></div>
+
+    <div class="header-top">
+        <div class="container">
+            <div class="contact-info">
+                <span>📞 (86) 176 6512 0670</span>
+                <span>✉️ info@jtour.ai</span>
+                <span>✉️ Sales@jtour.ai</span>
+            </div>
+            <div><a href="index.html" class="back-link">← Back to Jtour.ai</a></div>
+        </div>
+    </div>
+    <nav>
+        <div class="nav-container">
+            <a href="xiaotu-ai.html" class="logo">
+                <img src="logo.svg" alt="Jtour AI">
+                <div class="logo-text">
+                    <span class="brand">Jtour <span>AI</span></span>
+                    <span class="sub">小途AI</span>
+                </div>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="xiaotu-ai.html">Overview</a></li>
+                <li><a href="mailto:Sales@jtour.ai" class="nav-cta">Book Demo</a></li>
+            </ul>
+            <div class="mobile-toggle" onclick="this.classList.toggle('active'); document.querySelector('.nav-menu').classList.toggle('show');">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="product-bar">
+        <div class="container">
+            <a href="xiaotu-ai.html">🏠 Overview</a>
+            <a href="jtour-ai-document-ocr.html" class="">📄 AI Document OCR</a>
+            <a href="jtour-ai-freight-index.html" class="">📊 Freight Index</a>
+            <a href="jtour-ai-container-tracking.html" class="">🚢 Container Tracking</a>
+            <a href="jtour-ai-compliance-kb.html" class="">⚖️ Compliance KB</a>
+            <a href="jtour-ai-manifest.html" class="active">📋 Manifest Filing</a>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Manifest <span class="gradient-text">Filing</span></h1>
+            <p>Automated AMS, ISF 10+2, and VGM submissions to 18+ US port agents and 70+ carriers. Reduce filing time from hours to minutes.</p>
+            <div style="text-align: center;">
+                <a href="mailto:Sales@jtour.ai?subject=Demo Request: Manifest Filing" class="btn btn-primary">📅 Book a Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2>Automated <span class="highlight">Filing Types</span></h2>
+            <p class="section-subtitle">Connect once, file to all. Supported by 18+ US port agents and 70+ global carriers.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3>AMS (Automated Manifest System)</h3>
+                    <p>Auto-generates and submits AMS manifest to CBP via approved port agents. Covers house B/L, master B/L, and container-level filings.</p>
+                    <span class="tag">18+ Port Agents Connected</span>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>ISF 10+2 (Importer Security Filing)</h3>
+                    <p>Auto-populates all 10 importer elements and 2 carrier elements from booking data. Submits to CBP 24+ hours before vessel loading.</p>
+                    <span class="tag">Penalty Avoidance: $5K-$10K</span>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>VGM (Verified Gross Mass)</h3>
+                    <p>Collects VGM from shipper or weighbridge, validates against SOLAS requirements, and submits to carrier and terminal before cut-off.</p>
+                    <span class="tag">SOLAS Compliant</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Filing <span class="highlight">Workflow</span></h2>
+            <p class="section-subtitle">From booking confirmation to filed manifest — fully automated</p>
+            <div class="demo-box" style="max-width: 800px; margin: 0 auto;">
+                <div class="step-row">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <h4>Booking Confirmation Received</h4>
+                        <p>System auto-parses carrier booking confirmation. Extracts vessel, voyage, container numbers, and cargo details.</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <h4>Shipper Document Collection</h4>
+                        <p>Requests and collects shipping instructions, commercial invoice, and packing list from shipper via email/WhatsApp.</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <h4>Data Validation & Enrichment</h4>
+                        <p>Validates HS codes, checks OFAC sanctions, verifies consignee details, and enriches with carrier schedule data.</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <h4>Auto-Generate Manifest</h4>
+                        <p>Generates AMS, ISF 10+2, and VGM filings in the exact format required by each port agent and carrier.</p>
+                    </div>
+                </div>
+                <div class="step-row">
+                    <div class="step-num">5</div>
+                    <div class="step-content">
+                        <h4>Submit & Confirm</h4>
+                        <p>Submits to port agent/carrier API. Receives confirmation and booking reference. Auto-notifies shipper of filing status.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Supported <span class="highlight">Carriers & Agents</span></h2>
+            <div class="grid-4">
+                <div class="card metric-card"><div class="val">70+</div><div class="lab">Global Carriers</div><div class="desc">COSCO, MSC, Maersk, ONE, CMA CGM, Hapag-Lloyd...</div></div>
+                <div class="card metric-card"><div class="val">18+</div><div class="lab">US Port Agents</div><div class="desc">All major US container terminals</div></div>
+                <div class="card metric-card"><div class="val">&lt;5min</div><div class="lab">Filing Time</div><div class="desc">From data ready to submitted</div></div>
+                <div class="card metric-card"><div class="val">99.5%</div><div class="lab">First-Time Acceptance</div><div class="desc">No rejections or corrections needed</div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Experience Jtour AI in Action</h2>
+            <p>Free 14-day trial. See how AI transforms your US-line communication workflow.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:Sales@jtour.ai?subject=14-Day Free Trial Request" class="btn btn-primary">🚀 Start Free Trial</a>
+                <a href="mailto:Sales@jtour.ai?subject=Jtour AI Demo Request" class="btn btn-secondary">📅 Book a Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Jtour <span>AI</span> <span style="color: var(--text); font-size: 14px; font-weight: 400;">by Jtour.ai</span></h3>
+                    <p>US-line freight forwarder AI bilingual communication hosting solution. 24/7 automated handling of American shipper inquiries.</p>
+                    <p style="margin-top: 15px;">🇺🇸 17625 Fabrica Way, Cerritos, CA 90703</p>
+                    <p>🇨🇳 RM101, Yunhe Est. Dongcheng, Dongguan City, China</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="jtour-ai-document-ocr.html">AI Document OCR</a></li>
+                        <li><a href="jtour-ai-freight-index.html">Freight Index</a></li>
+                        <li><a href="jtour-ai-container-tracking.html">Container Tracking</a></li>
+                        <li><a href="jtour-ai-compliance-kb.html">Compliance KB</a></li>
+                        <li><a href="jtour-ai-manifest.html">Manifest Filing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Jtour.ai</a></li>
+                        <li><a href="index.html">Jtour.ai Main Site</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>📞 (86) 176 6512 0670</li>
+                        <li>✉️ info@jtour.ai</li>
+                        <li>✉️ Sales@jtour.ai</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Jtour AI by Jtour.ai. All Rights Reserved.</p>
+                <p>17625 Fabrica Way, Cerritos, CA 90703 | (86) 176 6512 0670 | Sales@jtour.ai</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
