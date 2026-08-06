@@ -1,1 +1,923 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jtour AI | AI-Powered US Freight Forwarder Communication Platform</title>
+    <meta name="description" content="Jtour AI - The Shopify for US freight forwarders. 24/7 AI bilingual communication automation handling American shipper inquiries with 90%+ closure rate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-deep: #02040a;
+            --bg-dark: #0a0f1c;
+            --bg-card: rgba(15, 23, 42, 0.7);
+            --bg-glass: rgba(30, 41, 59, 0.4);
+            --cyan: #00f0ff;
+            --cyan-glow: rgba(0, 240, 255, 0.3);
+            --purple: #a855f7;
+            --purple-glow: rgba(168, 85, 247, 0.3);
+            --blue: #3b82f6;
+            --blue-glow: rgba(59, 130, 246, 0.3);
+            --accent: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.3);
+            --text: #94a3b8;
+            --text-light: #e2e8f0;
+            --text-white: #ffffff;
+            --border: rgba(148, 163, 184, 0.15);
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--bg-deep);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        ::selection { background: var(--cyan-glow); color: var(--text-white); }
+
+        /* Grid Background */
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none; z-index: 0;
+        }
+        .glow-orb {
+            position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+        }
+        .glow-orb.cyan { width: 500px; height: 500px; background: var(--cyan-glow); top: -200px; right: -100px; }
+        .glow-orb.purple { width: 400px; height: 400px; background: var(--purple-glow); bottom: 10%; left: -150px; }
+        .glow-orb.blue { width: 350px; height: 350px; background: var(--blue-glow); top: 40%; right: 10%; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* Header */
+        .header-top {
+            background: rgba(2, 4, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 0; font-size: 13px;
+        }
+        .header-top .container { display: flex; justify-content: space-between; align-items: center; }
+        .header-top a { color: var(--text); text-decoration: none; transition: color 0.3s; }
+        .header-top a:hover { color: var(--cyan); }
+        .contact-info { display: flex; gap: 25px; }
+        .contact-info span { display: flex; align-items: center; gap: 8px; }
+        .back-link {
+            background: var(--bg-glass); border: 1px solid var(--border);
+            padding: 6px 16px; border-radius: 20px; font-size: 13px;
+            transition: all 0.3s; backdrop-filter: blur(10px);
+        }
+        .back-link:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        nav {
+            background: rgba(2, 4, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo img { height: 44px; width: auto; }
+        .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .logo-text .brand { font-size: 22px; font-weight: 800; color: var(--text-white); letter-spacing: -0.5px; text-shadow: 0 0 20px rgba(0,240,255,0.15); }
+        .logo-text .brand span { color: var(--cyan); text-shadow: 0 0 15px var(--cyan-glow); }
+        .logo-text .sub { font-size: 12px; color: rgba(148,163,184,0.7); font-weight: 500; letter-spacing: 2px; }
+
+        .nav-menu { display: flex; gap: 4px; list-style: none; white-space: nowrap; }
+        .nav-menu a {
+            color: var(--text); text-decoration: none; padding: 10px 16px;
+            font-weight: 500; font-size: 14px; border-radius: 8px;
+            transition: all 0.3s; position: relative;
+        }
+        .nav-menu a:hover { color: var(--cyan); background: rgba(0, 240, 255, 0.08); }
+        .nav-menu a.active { color: var(--cyan); }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--cyan), var(--blue)) !important;
+            color: var(--bg-deep) !important; padding: 10px 24px !important;
+            border-radius: 8px !important; font-weight: 700 !important;
+        }
+        .nav-cta:hover { box-shadow: 0 0 20px var(--cyan-glow); }
+        .mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
+        .mobile-toggle span { width: 25px; height: 2px; background: var(--text-light); border-radius: 2px; transition: all 0.3s; }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px; position: relative; overflow: hidden;
+        }
+        .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--bg-glass); border: 1px solid var(--border);
+            padding: 8px 20px; border-radius: 50px; font-size: 13px;
+            color: var(--cyan); margin-bottom: 24px; backdrop-filter: blur(10px);
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; background: var(--cyan);
+            border-radius: 50%; animation: pulse 2s infinite;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+        @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 10px var(--cyan)} 50%{opacity:.5;box-shadow:0 0 20px var(--cyan)} }
+        .hero h1 {
+            font-size: 52px; line-height: 1.1; margin-bottom: 20px;
+            font-weight: 800; color: var(--text-white); letter-spacing: -1px;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p { font-size: 18px; color: var(--text); margin-bottom: 35px; line-height: 1.8; max-width: 540px; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px; border-radius: 10px; font-weight: 600;
+            font-size: 15px; text-decoration: none; transition: all 0.3s;
+            border: none; cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-deep); font-weight: 700;
+        }
+        .btn-primary:hover { box-shadow: 0 0 30px var(--cyan-glow); transform: translateY(-2px); }
+        .btn-secondary {
+            background: var(--bg-glass); color: var(--text-light);
+            border: 1px solid var(--border); backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); }
+        .hero-stats {
+            display: flex; gap: 40px; margin-top: 50px; padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+        .hero-stat { text-align: left; }
+        .hero-stat .number { font-size: 36px; font-weight: 800; color: var(--cyan); }
+        .hero-stat .label { font-size: 13px; color: var(--text); margin-top: 4px; }
+
+        /* Chat Demo */
+        .hero-visual {
+            background: var(--bg-card); border-radius: 20px;
+            padding: 32px; border: 1px solid var(--border);
+            backdrop-filter: blur(20px); position: relative; overflow: hidden;
+        }
+        .hero-visual::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,240,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .chat-demo { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1; }
+        .chat-msg {
+            padding: 14px 18px; border-radius: 14px; max-width: 88%;
+            font-size: 14px; animation: fadeInUp 0.6s ease forwards; opacity: 0;
+        }
+        .chat-msg.inbound {
+            background: rgba(59, 130, 246, 0.12);
+            align-self: flex-start; border: 1px solid rgba(59, 130, 246, 0.2);
+            border-bottom-left-radius: 4px; color: var(--text-light);
+        }
+        .chat-msg.outbound {
+            background: rgba(0, 240, 255, 0.1);
+            align-self: flex-end; border: 1px solid rgba(0, 240, 255, 0.2);
+            border-bottom-right-radius: 4px; color: var(--text-light);
+        }
+        .chat-msg .time { font-size: 11px; color: var(--text); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+        .ai-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; color: var(--cyan); margin-bottom: 6px;
+            font-weight: 600;
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-msg:nth-child(1) { animation-delay: 0.3s; }
+        .chat-msg:nth-child(2) { animation-delay: 0.8s; }
+        .chat-msg:nth-child(3) { animation-delay: 1.3s; }
+        .chat-msg:nth-child(4) { animation-delay: 1.8s; }
+
+        /* Section Common */
+        .section { padding: 100px 0; position: relative; }
+        .section h2 {
+            font-size: 40px; color: var(--text-white); text-align: center;
+            margin-bottom: 16px; font-weight: 800; letter-spacing: -0.5px;
+        }
+        .section h2 .highlight { color: var(--cyan); }
+        .section-subtitle {
+            text-align: center; color: var(--text); font-size: 18px;
+            margin-bottom: 60px; max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px;
+            backdrop-filter: blur(20px); transition: all 0.4s;
+        }
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.08);
+            transform: translateY(-4px);
+        }
+        .card-icon {
+            width: 56px; height: 56px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+        }
+        .card h3 { color: var(--text-white); font-size: 20px; margin-bottom: 12px; font-weight: 700; }
+        .card p { color: var(--text); font-size: 15px; line-height: 1.7; }
+
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        /* Pain Cards */
+        .pain-card { border-left: 3px solid var(--danger); }
+        .pain-stat {
+            display: inline-block; background: rgba(239, 68, 68, 0.1);
+            color: var(--danger); padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; margin-top: 12px;
+        }
+
+        /* Solution Cards */
+        .solution-card { text-align: center; position: relative; overflow: hidden; }
+        .solution-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+        }
+        .solution-tag {
+            display: inline-block; background: rgba(0, 240, 255, 0.1);
+            color: var(--cyan); padding: 4px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; margin-top: 16px; border: 1px solid rgba(0,240,255,0.2);
+        }
+
+        /* Diff Section */
+        .diff-card { position: relative; }
+        .diff-card.us { border-top: 3px solid var(--cyan); }
+        .diff-card.them { border-top: 3px solid var(--border); opacity: 0.8; }
+        .diff-label {
+            display: inline-block; padding: 4px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; margin-bottom: 20px;
+        }
+        .diff-label.us { background: rgba(0, 240, 255, 0.1); color: var(--cyan); border: 1px solid rgba(0,240,255,0.2); }
+        .diff-list { list-style: none; }
+        .diff-list li { padding: 10px 0; font-size: 15px; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text-light); }
+        .diff-list li:last-child { border-bottom: none; }
+        .diff-list .check { color: var(--cyan); font-weight: bold; flex-shrink: 0; }
+        .diff-list .cross { color: var(--danger); font-weight: bold; flex-shrink: 0; }
+
+        /* Process */
+        .process-grid { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 60px; position: relative; }
+        .process-grid::before {
+            content: ''; position: absolute; top: 28px; left: 8%; right: 8%; height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--blue));
+        }
+        .process-step { text-align: center; width: 18%; position: relative; z-index: 1; }
+        .process-step .num {
+            width: 56px; height: 56px; background: var(--bg-deep);
+            border: 2px solid var(--cyan); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 800; color: var(--cyan);
+            margin: 0 auto 16px; box-shadow: 0 0 20px var(--cyan-glow);
+        }
+        .process-step h4 { color: var(--text-white); font-size: 16px; margin-bottom: 8px; }
+        .process-step p { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+        /* Pricing */
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; align-items: start; }
+        .pricing-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; overflow: hidden; transition: all 0.4s; position: relative;
+        }
+        .pricing-card:hover { border-color: rgba(0, 240, 255, 0.3); box-shadow: 0 0 40px rgba(0,240,255,0.08); transform: translateY(-6px); }
+        .pricing-card.featured { border: 1px solid var(--cyan); transform: scale(1.03); box-shadow: 0 0 50px var(--cyan-glow); }
+        .pricing-card.featured:hover { transform: scale(1.03) translateY(-6px); }
+        .pricing-badge {
+            position: absolute; top: 0; right: 0;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-deep); padding: 6px 18px;
+            font-size: 12px; font-weight: 700; border-bottom-left-radius: 14px;
+        }
+        .pricing-header { padding: 40px 30px 24px; text-align: center; border-bottom: 1px solid var(--border); }
+        .pricing-header h3 { font-size: 22px; color: var(--text-white); margin-bottom: 8px; }
+        .pricing-price { padding: 28px 30px; text-align: center; background: rgba(0,0,0,0.2); }
+        .pricing-price .currency { font-size: 24px; color: var(--text-light); font-weight: 600; }
+        .pricing-price .amount { font-size: 48px; color: var(--cyan); font-weight: 800; line-height: 1; }
+        .pricing-body { padding: 28px 30px; }
+        .pricing-body ul { list-style: none; }
+        .pricing-body li { padding: 10px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 8px; color: var(--text-light); }
+        .pricing-body li::before { content: '✓'; color: var(--cyan); font-weight: bold; flex-shrink: 0; }
+        .pricing-footer { padding: 0 30px 30px; }
+        .pricing-footer .btn { width: 100%; justify-content: center; }
+
+        /* SLA */
+        .sla-card { text-align: center; position: relative; overflow: hidden; }
+        .sla-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+        }
+        .sla-card .number { font-size: 42px; font-weight: 800; color: var(--cyan); margin-bottom: 8px; }
+        .sla-card .label { font-size: 15px; color: var(--text-white); font-weight: 600; }
+        .sla-card .desc { font-size: 13px; color: var(--text); margin-top: 6px; }
+
+        /* Channel Grid */
+        .channels-wrap { background: var(--bg-card); border-radius: 20px; padding: 48px; border: 1px solid var(--border); margin-top: 40px; }
+        .channel-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px; border-radius: 12px; transition: all 0.3s; }
+        .channel-item:hover { background: rgba(0, 240, 255, 0.05); }
+        .channel-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+        }
+        .channel-item h4 { color: var(--text-white); font-size: 16px; margin-bottom: 6px; }
+        .channel-item p { color: var(--text); font-size: 13px; line-height: 1.6; }
+
+        /* CTA */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(0,240,255,0.1));
+            padding: 100px 0; text-align: center; position: relative;
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+        }
+        .cta-section::before {
+            content: ''; position: absolute; top: -100px; right: -100px;
+            width: 400px; height: 400px; background: var(--purple-glow);
+            border-radius: 50%; filter: blur(100px); pointer-events: none;
+        }
+        .cta-section h2 { font-size: 40px; margin-bottom: 16px; color: var(--text-white); }
+        .cta-section p { font-size: 18px; color: var(--text); margin-bottom: 36px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* Footer */
+        footer { background: var(--bg-deep); border-top: 1px solid var(--border); padding: 60px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; margin-bottom: 40px; }
+        .footer-about h3 { font-size: 22px; margin-bottom: 16px; color: var(--text-white); }
+        .footer-about h3 span { color: var(--cyan); }
+        .footer-about p { color: var(--text); font-size: 14px; line-height: 1.8; }
+        .footer-links h4 { font-size: 16px; margin-bottom: 20px; color: var(--cyan); }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: var(--text); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--cyan); }
+        .footer-bottom { border-top: 1px solid var(--border); padding-top: 30px; display: flex; justify-content: space-between; font-size: 13px; color: var(--text); flex-wrap: wrap; gap: 10px; }
+
+        /* Product Links Bar */
+        .product-bar {
+            background: linear-gradient(90deg, rgba(0,240,255,0.08), rgba(168,85,247,0.08));
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        .product-bar .container { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .product-bar a {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--bg-glass); border: 1px solid var(--border);
+            padding: 10px 20px; border-radius: 10px; color: var(--text-light);
+            text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: all 0.3s; backdrop-filter: blur(10px);
+        }
+        .product-bar a:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
+        .product-bar a.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.08); }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 38px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .pricing-card.featured { transform: none; }
+            .process-grid { flex-wrap: wrap; gap: 30px; }
+            .process-grid::before { display: none; }
+            .process-step { width: 45%; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .channels-wrap { padding: 30px 20px; }
+        }
+        @media (max-width: 576px) {
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; right: 0;
+                background: var(--bg-deep); flex-direction: column; padding: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-menu.show { display: flex; }
+            .mobile-toggle { display: flex; }
+            .grid-4 { grid-template-columns: 1fr; }
+            .process-step { width: 100%; }
+            .hero-stats { flex-wrap: wrap; gap: 24px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .section h2 { font-size: 30px; }
+        }
+
+        /* Scroll Animations */
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="glow-orb cyan"></div>
+    <div class="glow-orb purple"></div>
+    <div class="glow-orb blue"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="contact-info">
+                    <span>📞 (86) 176 6512 0670</span>
+                    <span>✉️ info@jtour.ai</span>
+                    <span>✉️ Sales@jtour.ai</span>
+                </div>
+                <div><a href="index.html" class="back-link">← Back to Jtour.ai</a></div>
+            </div>
+        </div>
+        <nav>
+            <div class="nav-container">
+                <a href="xiaotu-ai.html" class="logo">
+                    <img src="logo.svg" alt="Jtour AI">
+                    <div class="logo-text">
+                        <span class="brand">Jtour <span>AI</span></span>
+                        <span class="sub">小途AI</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="#pain">Pain Points</a></li>
+                    <li><a href="#solution">Capabilities</a></li>
+                    <li><a href="#channels">Channels</a></li>
+                    <li><a href="#diff">Why Us</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#sla">SLA</a></li>
+                    <li><a href="mailto:Sales@jtour.ai" class="nav-cta">Book Demo</a></li>
+                </ul>
+                <div class="mobile-toggle" onclick="this.classList.toggle('active'); document.querySelector('.nav-menu').classList.toggle('show');">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Product Bar -->
+    <div class="product-bar">
+        <div class="container">
+            <a href="xiaotu-ai.html" class="active">🏠 Overview</a>
+            <a href="jtour-ai-document-ocr.html">📄 AI Document OCR</a>
+            <a href="jtour-ai-freight-index.html">📊 Freight Index</a>
+            <a href="jtour-ai-container-tracking.html">🚢 Container Tracking</a>
+            <a href="jtour-ai-compliance-kb.html">⚖️ Compliance KB</a>
+            <a href="jtour-ai-manifest.html">📋 Manifest Filing</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div>
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        AI-Powered US Freight Forwarder Communication
+                    </div>
+                    <h1>The <span class="gradient-text">"Shopify"</span><br>for US Freight Forwarders</h1>
+                    <p>24/7 AI-powered bilingual communication automation that handles American shipper inquiries with 90%+ closure rate. Eliminate timezone pain, bilingual night-shift costs, and never miss another lead.</p>
+                    <div class="hero-buttons">
+                        <a href="mailto:Sales@jtour.ai?subject=Jtour AI Demo Request" class="btn btn-primary">📅 Book a Demo</a>
+                        <a href="mailto:Sales@jtour.ai?subject=14-Day Free Trial Request" class="btn btn-secondary">🚀 Free 14-Day Trial</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat"><div class="number">≥90%</div><div class="label">AI Auto-Closure Rate</div></div>
+                        <div class="hero-stat"><div class="number">≤60s</div><div class="label">Night Inquiry Response</div></div>
+                        <div class="hero-stat"><div class="number">&lt;2%</div><div class="label">Compliance Error Rate</div></div>
+                        <div class="hero-stat"><div class="number">15%+</div><div class="label">Conversion Lift</div></div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="chat-demo">
+                        <div class="chat-msg inbound">
+                            <div class="ai-tag">🇺🇸 US Shipper 02:30 AM PST</div>
+                            Hi, I need a DDP quote for 2x40HQ electronics from Yantian to Los Angeles. Do I need FDA registration?
+                            <div class="time">02:30 AM PST</div>
+                        </div>
+                        <div class="chat-msg outbound">
+                            <div class="ai-tag">🤖 Jtour AI Auto-Reply</div>
+                            Hi! Thanks for reaching out. For electronics shipped to the US, FDA registration is typically not required unless they are medical devices or laser products. I'll prepare your DDP quote including ocean freight, THC, ISF, Bond, and inland LTL to your door. Could you confirm the delivery zip code?
+                            <div class="time">02:31 AM PST</div>
+                        </div>
+                        <div class="chat-msg inbound">
+                            <div class="ai-tag">🇺🇸 US Shipper</div>
+                            90210. Also need liftgate delivery.
+                            <div class="time">02:35 AM PST</div>
+                        </div>
+                        <div class="chat-msg outbound">
+                            <div class="ai-tag">🤖 Jtour AI + Quote Engine</div>
+                            Got it! Your DDP all-in quote is ready: $8,420 per 40HQ (including liftgate). PDF attached. ETA: 26-32 days. Bond & ISF filing included. Reply YES to book.
+                            <div class="time">02:36 AM PST</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pain Points -->
+    <section class="section" id="pain">
+        <div class="container">
+            <h2>Four <span class="highlight">Critical Pain Points</span></h2>
+            <p class="section-subtitle">With 10+ years in China-US cross-border logistics, we know the communication struggles US freight forwarders face</p>
+            <div class="grid-2">
+                <div class="card pain-card">
+                    <div class="card-icon">🌙</div>
+                    <h3>Massive Nighttime Lead Loss Due to Timezone Gap</h3>
+                    <p>American shippers send inquiries during their daytime (Beijing midnight). Without bilingual night-shift sales, these leads go straight to competitors.</p>
+                    <span class="pain-stat">75% of nighttime inquiries switch to competitors without response</span>
+                </div>
+                <div class="card pain-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Complex US Compliance with High Penalty Risk</h3>
+                    <p>ISF 10+2, FDA clearance, wood packaging fumigation, anti-dumping screening, OFAC sanctions — any oversight triggers heavy customs penalties.</p>
+                    <span class="pain-stat">Single ISF late filing penalty: $5,000 - $10,000</span>
+                </div>
+                <div class="card pain-card">
+                    <div class="card-icon">📝</div>
+                    <h3>Insufficient American Business English Capability</h3>
+                    <p>Generic Chinese-export English templates feel robotic to American shippers. Demurrage, Detention, Bond, Lumper — these concepts need native-level explanation.</p>
+                    <span class="pain-stat">Terminology errors reduce conversion by 30%+</span>
+                </div>
+                <div class="card pain-card">
+                    <div class="card-icon">💰</div>
+                    <h3>High Cost of Bilingual Sales Talent</h3>
+                    <p>Recruiting and retaining bilingual sales staff with US line expertise is expensive. Night-shift premiums, turnover, and training cycles are constant burdens.</p>
+                    <span class="pain-stat">Annual cost per bilingual US-line sales: $30,000 - $55,000</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="section" id="solution" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Seven <span class="highlight">Core Capabilities</span></h2>
+            <p class="section-subtitle">We don't sell software licenses — we deliver business outcomes: response rate, closure rate, conversion rate</p>
+            <div class="grid-3">
+                <div class="card solution-card">
+                    <div class="card-icon">🌐</div>
+                    <h3>6-Channel Unified Access</h3>
+                    <p>Email, WhatsApp Business API, FB Messenger, website chat, LinkedIn DM, US SMS — all inquiries auto-routed into a single AI pipeline.</p>
+                    <span class="solution-tag">Official API Direct · Zero Ban Risk</span>
+                </div>
+                <div class="card solution-card">
+                    <div class="card-icon">🧠</div>
+                    <h3>US-Line Intent Recognition</h3>
+                    <p>Powered by our US-line vertical LLM, accurately identifies 6 intent types: quotation, vessel schedule, compliance inquiry, cost complaint, document submission, and emotional escalation.</p>
+                    <span class="solution-tag">Intent Accuracy ≥85%</span>
+                </div>
+                <div class="card solution-card">
+                    <div class="card-icon">🇺🇸</div>
+                    <h3>Native American Business English</h3>
+                    <p>10,000+ US-line native business English templates generated via RAG knowledge base. Zero terminology errors, zero grammar mistakes — reads native to American shippers.</p>
+                    <span class="solution-tag">Terminology Error Rate &lt;2%</span>
+                </div>
+                <div class="card solution-card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Automated Compliance Pre-Screening</h3>
+                    <p>Food→FDA checklist, wood→Lacey Act, electronics→FCC, medical→510(k), anti-dumping→extra tariff — auto-pushes compliance requirements before booking.</p>
+                    <span class="solution-tag">Compliance Push Accuracy ≥95%</span>
+                </div>
+                <div class="card solution-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Real-Time Rate Auto-Quoting</h3>
+                    <p>Pulls live carrier rates, US inland LTL costs, ISF filing fees, and Bond costs in real time. Generates professional PDF DDP all-inclusive quotes in English.</p>
+                    <span class="solution-tag">DDP Quote Completeness ≥95%</span>
+                </div>
+                <div class="card solution-card">
+                    <div class="card-icon">🌙</div>
+                    <h3>China-US Timezone Smart Routing</h3>
+                    <p>Auto-switches to full AI mode during Beijing 18:00-08:00. Daytime simple inquiries get AI pre-processing. High-value orders route to human agents.</p>
+                    <span class="solution-tag">Zero Nighttime Lead Loss</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Channels -->
+    <section class="section" id="channels" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>6 <span class="highlight">Native Channel</span> Integrations</h2>
+            <p class="section-subtitle">All via official vendor-compliant APIs. No web scraping. No account ban risk.</p>
+            <div class="channels-wrap">
+                <div class="grid-3">
+                    <div class="channel-item">
+                        <div class="channel-icon">📧</div>
+                        <div>
+                            <h4>Business Email</h4>
+                            <p>Gmail / Outlook365 / Custom domain OAuth2.0 secure auth. Auto-parses PDF attachments with US-line keyword detection.</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">💬</div>
+                        <div>
+                            <h4>WhatsApp Business API</h4>
+                            <p>Meta official BSP direct connection. Rich media parsing, compliant template notifications, multi-account load balancing.</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">👍</div>
+                        <div>
+                            <h4>Facebook Messenger</h4>
+                            <p>Page DM real-time push. Auto-distinguishes ad-lead inquiries from repeat customers. Guides leads to private channels.</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">🌐</div>
+                        <div>
+                            <h4>Website Live Chat</h4>
+                            <p>Zendesk / Intercom / Custom JS widget bidirectional sync. Zero lead loss from Google Ads and SEO traffic.</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">💼</div>
+                        <div>
+                            <h4>LinkedIn Direct Message</h4>
+                            <p>Enterprise authorized compliant access. Auto-identifies overseas factories and traders sending logistics inquiries.</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">📱</div>
+                        <div>
+                            <h4>US SMS Text</h4>
+                            <p>Twilio 10DLC compliant long-number channel. Auto-triggers arrival notices, customs reminders, and document requests.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Differentiation -->
+    <section class="section" id="diff" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Why <span class="highlight">Jtour AI</span>?</h2>
+            <p class="section-subtitle">"Yida goes wide, we go deep" — Vertical US-line depth that Yida cannot replicate</p>
+            <div class="grid-2">
+                <div class="card diff-card us">
+                    <span class="diff-label us">✨ Jtour AI — Vertical US-Line Depth</span>
+                    <h3 style="color: var(--text-white); margin-bottom: 20px;">🎯 Deep Vertical Focus</h3>
+                    <ul class="diff-list">
+                        <li><span class="check">✓</span> Full US customs compliance library (FDA/ISF/ACE/Anti-dumping)</li>
+                        <li><span class="check">✓</span> Native American business English playbook (5,000+ templates)</li>
+                        <li><span class="check">✓</span> US inland LTL delivery knowledge base (Saia/Estes)</li>
+                        <li><span class="check">✓</span> Pure Agent-native architecture, stable API direct connections</li>
+                        <li><span class="check">✓</span> Lightweight cloud SaaS, remote deployment in 2 hours</li>
+                        <li><span class="check">✓</span> Starter plan $399/mo — covers small forwarders</li>
+                        <li><span class="check">✓</span> Physical multi-tenant isolation, data security guaranteed</li>
+                        <li><span class="check">✓</span> 100% R&D focused on US-line, 3-5x iteration speed</li>
+                    </ul>
+                </div>
+                <div class="card diff-card them">
+                    <span class="diff-label them">Yida Yunxiaoda Cuber — Generic All-Routes</span>
+                    <h3 style="color: var(--text); margin-bottom: 20px;">⚠️ Generic Strategy's US-Line Gaps</h3>
+                    <ul class="diff-list">
+                        <li><span class="cross">✗</span> Only basic ISF, missing FDA/ACE/LTL complete system</li>
+                        <li><span class="cross">✗</span> Chinese-export English corpus, frequent terminology errors</li>
+                        <li><span class="cross">✗</span> No US inland trucking real-time rate database</li>
+                        <li><span class="cross">✗</span> RPA relies on web scraping, breaks on page updates</li>
+                        <li><span class="cross">✗</span> KA clients require on-site deployment, linear headcount growth</li>
+                        <li><span class="cross">✗</span> Private deployment $100K+/year, small forwarders can't afford</li>
+                        <li><span class="cross">✗</span> Weak multi-tenant isolation, major clients resist</li>
+                        <li><span class="cross">✗</span> All-routes dispersed, slow US-line capability growth</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Business <span class="highlight">Closure Loop</span></h2>
+            <p class="section-subtitle">From inquiry to conversion — fully AI-automated. Only complex cases route to human agents.</p>
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="num">1</div>
+                    <h4>Multi-Channel Ingest</h4>
+                    <p>6 channels unified. AI multi-modal parsing.</p>
+                </div>
+                <div class="process-step">
+                    <div class="num">2</div>
+                    <h4>Need Structuring</h4>
+                    <p>Auto-extracts container type, product, compliance docs.</p>
+                </div>
+                <div class="process-step">
+                    <div class="num">3</div>
+                    <h4>System Integration</h4>
+                    <p>Real-time rate, LTL cost, compliance rules lookup.</p>
+                </div>
+                <div class="process-step">
+                    <div class="num">4</div>
+                    <h4>AI English Reply</h4>
+                    <p>RAG-powered native American English response.</p>
+                </div>
+                <div class="process-step">
+                    <div class="num">5</div>
+                    <h4>Data Feedback Loop</h4>
+                    <p>Conversations auto-archived. Weekly fine-tuning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>Three-Tier <span class="highlight">Pricing</span></h2>
+            <p class="section-subtitle">Lightweight tiered subscriptions. Small US-line forwarders covered with zero private deployment barrier.</p>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <p style="color: var(--text); font-size: 14px;">&lt; 80 inquiries/day</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">$</span>
+                        <span class="amount">399</span>
+                        <span style="color: var(--text); font-size: 14px;">/ month</span>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>3 channels (Email + WhatsApp + Website)</li>
+                            <li>Basic knowledge base (Top 500 FAQ)</li>
+                            <li>Basic NLP intent recognition</li>
+                            <li>Monthly analytics report</li>
+                            <li>Remote support</li>
+                            <li>Standard cloud SaaS deployment</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <a href="mailto:Sales@jtour.ai?subject=Starter Plan Inquiry" class="btn btn-secondary">Inquire Now</a>
+                    </div>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">RECOMMENDED</div>
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <p style="color: var(--text); font-size: 14px;">80 - 300 inquiries/day</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">$</span>
+                        <span class="amount">899</span>
+                        <span style="color: var(--text); font-size: 14px;">/ month</span>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>All 6 channels</li>
+                            <li>Full US-line compliance knowledge base</li>
+                            <li>AI auto-quoting engine integration</li>
+                            <li>Weekly + monthly analytics reports</li>
+                            <li>Dedicated weekly playbook optimization</li>
+                            <li>TMS system integration available</li>
+                            <li>China-US timezone smart routing</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <a href="mailto:Sales@jtour.ai?subject=Professional Plan Inquiry" class="btn btn-primary">Inquire Now</a>
+                    </div>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <p style="color: var(--text); font-size: 14px;">&gt; 300 inquiries/day</p>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">$</span>
+                        <span class="amount">1,399</span>
+                        <span style="color: var(--text); font-size: 14px;">/ month</span>
+                    </div>
+                    <div class="pricing-body">
+                        <ul>
+                            <li>All modules + custom API</li>
+                            <li>Custom industry knowledge base tuning</li>
+                            <li>Dedicated US-line bilingual expert 1v1</li>
+                            <li>Real-time dashboard + custom reports</li>
+                            <li>Private deployment option</li>
+                            <li>Enterprise SLA guarantee</li>
+                            <li>Priority feature roadmap access</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-footer">
+                        <a href="mailto:Sales@jtour.ai?subject=Enterprise Plan Inquiry" class="btn btn-secondary">Inquire Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLA -->
+    <section class="section" id="sla" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <h2>SLA <span class="highlight">Commitments</span></h2>
+            <p class="section-subtitle">Contract-backed hard metrics. We prove AI-hosted communication value with data.</p>
+            <div class="grid-4">
+                <div class="card sla-card">
+                    <div class="number">≤60s</div>
+                    <div class="label">Night Inquiry AI Response</div>
+                    <div class="desc">US shipper late-night inquiries, AI responds in seconds</div>
+                </div>
+                <div class="card sla-card">
+                    <div class="number">≥90%</div>
+                    <div class="label">AI Auto-Closure Rate</div>
+                    <div class="desc">Standard inquiries resolved without human handoff</div>
+                </div>
+                <div class="card sla-card">
+                    <div class="number">&lt;2%</div>
+                    <div class="label">Terminology Error Rate</div>
+                    <div class="desc">US-line professional terms, precise and accurate</div>
+                </div>
+                <div class="card sla-card">
+                    <div class="number">≤2h</div>
+                    <div class="label">Complex Case Human Response</div>
+                    <div class="desc">Large contracts / claims / emotional escalations</div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 40px;">
+                <h3 style="color: var(--text-white); margin-bottom: 24px; text-align: center; font-size: 20px;">Monthly Report Must Include</h3>
+                <div class="grid-2" style="max-width: 800px; margin: 0 auto;">
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> Night inquiry response latency distribution (avg/median/P95)</div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> AI auto-closure rate vs human handoff rate trend</div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> Customer inquiry conversion funnel (inquiry → quote → booking)</div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> Compliance communication error log and root cause analysis</div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> Month-over-month labor cost savings calculation</div>
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 15px; color: var(--text-light);"><span style="color: var(--cyan); font-weight: bold;">✓</span> Knowledge base additions and model optimization log</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Start the US-Line AI Communication Era</h2>
+            <p>Free 14-day trial. Zero risk to experience 24/7 AI handling American shipper inquiries. Cancel anytime during trial. No prepayment required.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:Sales@jtour.ai?subject=14-Day Free Trial Request" class="btn btn-primary" style="font-size: 17px; padding: 16px 36px;">🚀 Start Free Trial</a>
+                <a href="mailto:Sales@jtour.ai?subject=Jtour AI Demo Request" class="btn btn-secondary" style="font-size: 17px; padding: 16px 36px;">📅 Book a Demo</a>
+            </div>
+            <p style="margin-top: 28px; font-size: 14px; color: var(--text);">Or contact us directly: Sales@jtour.ai | (86) 176 6512 0670</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Jtour <span>AI</span> <span style="color: var(--text); font-size: 14px; font-weight: 400;">by Jtour.ai</span></h3>
+                    <p>US-line freight forwarder AI bilingual communication hosting solution. 24/7 automated handling of American shipper inquiries. Never miss a lead — the "Shopify" for US freight forwarders.</p>
+                    <p style="margin-top: 15px;">🇺🇸 17625 Fabrica Way, Cerritos, CA 90703</p>
+                    <p>🇨🇳 RM101, Yunhe Est. Dongcheng, Dongguan City, China</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="jtour-ai-document-ocr.html">AI Document OCR</a></li>
+                        <li><a href="jtour-ai-freight-index.html">Freight Index</a></li>
+                        <li><a href="jtour-ai-container-tracking.html">Container Tracking</a></li>
+                        <li><a href="jtour-ai-compliance-kb.html">Compliance KB</a></li>
+                        <li><a href="jtour-ai-manifest.html">Manifest Filing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Jtour.ai</a></li>
+                        <li><a href="index.html">Jtour.ai Main Site</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>📞 (86) 176 6512 0670</li>
+                        <li>✉️ info@jtour.ai</li>
+                        <li>✉️ Sales@jtour.ai</li>
+                        <li style="margin-top: 10px; color: var(--text); font-size: 13px;">Mon-Fri 9:00-18:00 (Beijing)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Jtour AI by Jtour.ai. All Rights Reserved.</p>
+                <p>17625 Fabrica Way, Cerritos, CA 90703 | (86) 176 6512 0670 | Sales@jtour.ai</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
